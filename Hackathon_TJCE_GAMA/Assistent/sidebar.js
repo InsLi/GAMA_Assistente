@@ -614,3 +614,26 @@ function destacaCardDoEixo(eixo) {
     }
   }
 })();
+
+/* ------------------------------------------------------------
+   9) SUGESTAO VIA POSTMESSAGE (demonstracao completa)
+   Na pagina demonstracao.html, este painel e um iframe ao
+   lado do documento ficticio. Nesse contexto nao existe a
+   extensao instalada (o chrome.runtime nao esta disponivel),
+   entao a comunicacao acontece pela API postMessage:
+
+   [documento] -> [pagina demonstracao.html] -> [este iframe]
+
+   A pagina mae envia { tipo: "TRIAGEM_SUGERIDA", eixo, nivel }
+   e aqui aplicamos a mesma logica das outras vias.
+   ------------------------------------------------------------ */
+window.addEventListener("message", (evento) => {
+  // Apenas mensagens com o formato esperado sao aceitas.
+  const dados = evento && evento.data;
+  if (!dados || dados.tipo !== "TRIAGEM_SUGERIDA") return;
+
+  // Protecao: so aceitamos os 3 eixos conhecidos e niveis 1 a 5.
+  if (!["geo", "social", "ambiental"].includes(dados.eixo)) return;
+
+  aplicarSugestao(dados.eixo, dados.nivel);
+});

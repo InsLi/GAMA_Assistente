@@ -93,11 +93,35 @@
   let trechoAtivo = null;
 
   /* ------------------------------------------------------------
-     3) DETECCAO DA EXTENSAO
-     O content script da extensao (content.js) marca a pagina
-     com o atributo data-gama-extensao="1" no elemento <html>.
-     Se o atributo existir, a extensao esta ativa nesta pagina.
+     3) DETECCAO DO AMBIENTE
+     A caixinha pode funcionar em tres situacoes diferentes.
+     Chamamos cada uma de "caminho" (veja a secao 6):
+
+     a) DENTRO DA DEMONSTRACAO COMPLETA: o documento esta
+        embutido como iframe na pagina demonstracao.html, ao
+        lado do painel. Nesse caso enviamos uma mensagem para
+        a pagina mae, que repassa para o painel.
+     b) COM A EXTENSAO INSTALADA: o content script da extensao
+        marca a pagina com data-gama-extensao="1" no <html>.
+        Disparamos o evento personalizado gama:abrir.
+     c) SEM EXTENSAO E FORA DA DEMONSTRACAO: abrimos a
+        demonstracao do painel em uma nova aba, com o eixo e o
+        nivel na URL.
      ------------------------------------------------------------ */
+
+  /** true quando o documento esta embutido em outra pagina. */
+  function dentroDaDemonstracao() {
+    // window.parent e a janela que contem este iframe. Se for
+    // diferente da propria janela, estamos dentro de um iframe.
+    try {
+      return window.parent && window.parent !== window;
+    } catch (erro) {
+      // Algumas paginas estranhas bloqueiam o acesso a parent.
+      return false;
+    }
+  }
+
+  /** true quando a extensao GAMA esta ativa nesta pagina. */
   function extensaoAtiva() {
     return document.documentElement.dataset.gamaExtensao === "1";
   }
@@ -196,7 +220,9 @@
 
   /* ------------------------------------------------------------
      6) CLIQUE NA CAIXINHA
-     Aqui acontece a ponte entre o documento e a extensao.
+     Aqui acontece a ponte entre o documento e o painel. O
+     caminho e escolhido conforme o ambiente detectado na
+     secao 3 (demonstracao, extensao ou aba nova).
      ------------------------------------------------------------ */
   popup.addEventListener("click", () => {
     if (!trechoAtivo) return;
@@ -207,8 +233,23 @@
     // Destaca o trecho escolhido para o usuario ver o que levou.
     trechoAtivo.classList.add("trecho--ativo");
 
-    if (extensaoAtiva()) {
-      /* --- Caminho A: extensao instalada ---
+    if (dentroDaDemonstracao()) {
+      /* --- Caminho A: demonstracao completa (demonstracao.html) ---
+         Enviamos a mensagem para a pagina mae, que repassa para
+         o quadro do painel ao lado. A mensagem usa o tipo
+         GAMA_DEMO_SUGESTAO (formato interno da demonstracao);
+         a pagina mae converte para TRIAGEM_SUGERIDA. */
+      window.parent.postMessage(
+        {
+          tipo: "GAMA_DEMO_SUGESTAO",
+          eixo,
+          nivel,
+        },
+        "*" // Destino: a propria pagina que nos contem
+      );
+      esconderPopup();
+    } else if (extensaoAtiva()) {
+      /* --- Caminho B: extensao instalada ---
          Disparamos um evento personalizado na propria pagina.
          O content script (content.js) ouve "gama:abrir" e
          envia a mensagem TRIAGEM_SUGERIDA para o painel. */
@@ -219,7 +260,7 @@
       );
       esconderPopup();
     } else {
-      /* --- Caminho B: sem extensao ---
+      /* --- Caminho C: sem extensao e sem demonstracao ---
          Abrimos o arquivo da interface em uma nova aba, levando
          eixo e nivel na URL. O sidebar.js le esses parametros
          e aplica a mesma sugestao. */
@@ -252,10 +293,26 @@
   });
 
   /* ------------------------------------------------------------
-     8) AVISO QUANDO A EXTENSAO NAO ESTA INSTALADA
-     Avisamos uma unica vez, para o jurado da demonstracao saber
-     por que o clique abre uma aba nova em vez do painel lateral.
+     8) AJUSTES PARA CADA AMBIENTE
+     Dentro do palco da demonstracao (demonstracao.html), a
+     barra de instrucao propria do documento e o aviso de
+     "extensao nao detectada" nao fazem sentido: a pagina mae
+     ja tem a barra de orientacao e o painel esta logo ao
+     lado. Escondemos os dois nesse caso.
      ------------------------------------------------------------ */
+  if (dentroDaDemonstracao()) {
+    // Esconde a barra de instrucao do proprio documento.
+    const barra = document.querySelector(".barra-demo");
+    if (barra) barra.hidden = true;
+
+    // Nao mostra o aviso de extensao ausente: o painel ao
+    // lado cumpre a funcao dele nesta modalidade.
+    return;
+  }
+
+  // Fora do palco: avisamos uma unica vez, para o jurado da
+  // demonstracao saber por que o clique abre uma aba nova em
+  // vez do painel lateral.
   if (!extensaoAtiva()) {
     const aviso = document.createElement("div");
     aviso.className = "gama-aviso";

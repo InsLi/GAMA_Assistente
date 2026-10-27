@@ -1,0 +1,144 @@
+/* ============================================================
+   ARQUIVO: demonstracao.css
+   O que este arquivo cuida:
+   - Layout da pagina de demonstracao completa
+   - Barra superior de orientacao
+   - Palco com dois quadros (iframes) lado a lado
+   - Moldura do painel lateral, imitando o side panel real
+   - Versao estreita (celular), com o painel embaixo do documento
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   1) RESET MINIMO E ALTURA CHEIA
+   A pagina ocupa a janela inteira e nao rola: quem rola e o
+   conteudo de dentro de cada quadro (documento e painel).
+   ------------------------------------------------------------ */
+* { box-sizing: border-box; }
+
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  font-family: "Inter", "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    system-ui, "Helvetica Neue", Arial, sans-serif;
+  background: #dfe3e8;  /* Mesmo cinza neutro do painel real */
+  color: #16202e;
+  overflow: hidden;     /* A janela pai nao cria rolagem propria */
+}
+
+/* ------------------------------------------------------------
+   2) BARRA SUPERIOR DE ORIENTACAO
+   Faixa em degradê de menta (identidade do projeto) com o
+   titulo da demonstracao e o botao para abrir so o documento.
+   ------------------------------------------------------------ */
+.topo {
+  flex: none;              /* Nao encolhe: fica fixa no topo */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 10px 18px;
+  background: linear-gradient(125deg, #e7f7e6 0%, #d6f1d1 100%);
+  border-bottom: 1px solid rgba(0, 46, 99, 0.09);
+}
+
+.topo-texto {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.topo-texto strong {
+  color: #002e63;          /* Azul marinho institucional */
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+.topo-texto span {
+  color: #3f5570;
+  font-size: 11.5px;
+}
+
+/* Botao verde que leva para a pagina so do documento */
+.topo-botao {
+  flex: none;
+  padding: 7px 14px;
+  border-radius: 8px;
+  background: #1e824c;
+  color: #fff;
+  font-size: 12.5px;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(30, 130, 76, 0.28);
+  transition: background 0.15s ease;
+}
+.topo-botao:hover { background: #196f41; }
+
+/* ------------------------------------------------------------
+   3) PALCO COM OS DOIS QUADROS
+   flex: 1 faz o palco ocupar toda a altura que sobra depois
+   da barra superior. Os dois quadros dividem a largura.
+   ------------------------------------------------------------ */
+.palco {
+  flex: 1;
+  min-height: 0;           /* Permite que os iframes rolem */
+  display: flex;
+}
+
+/* Quadro do documento (esquerda): ocupa toda a largura que
+   sobra apos o painel. A borda some o scroll nativo do iframe
+   porque o documento ja tem seu proprio padrao de rolagem. */
+.palco-documento {
+  flex: 1;
+  min-width: 0;            /* Impede estouro por causa do iframe */
+  border: 0;
+  background: #dfe3e8;     /* Combina com o fundo do documento */
+}
+
+/* ------------------------------------------------------------
+   4) MOLDURA DO PAINEL LATERAL (direita)
+   Reproduz a aparencia do .gama-panel real: 400 px de largura,
+   borda esquerda cinza e sombra projetando para a esquerda.
+   ------------------------------------------------------------ */
+.palco-painel {
+  flex: none;
+  width: 400px;
+  display: flex;
+  background: #ffffff;
+  border-left: 1px solid #d8dee6;
+  box-shadow: -10px 0 30px rgba(15, 23, 42, 0.10);
+}
+
+/* O iframe do painel preenche a moldura inteira.
+   border: 0 remove a moldura padrao do navegador. */
+.palco-painel iframe {
+  flex: 1;
+  border: 0;
+  background: #ffffff;
+}
+
+/* ------------------------------------------------------------
+   5) VERSAO ESTREITA (celular ou janela pequena)
+   O lado a lado deixa de caber abaixo de 900 px. Nesse caso o
+   documento fica em cima e o painel embaixo, mantendo os dois
+   visiveis (o painel com altura minima para ser utilizavel).
+   ------------------------------------------------------------ */
+@media (max-width: 900px) {
+  .palco { flex-direction: column; }
+  .palco-documento { flex: 1; }
+  .palco-painel {
+    width: 100%;
+    height: 100vh;         /* Altura de uma tela para o painel */
+    border-left: 0;
+    border-top: 1px solid #d8dee6;
+    box-shadow: 0 -10px 30px rgba(15, 23, 42, 0.10);
+  }
+  .topo { flex-direction: column; align-items: flex-start; }
+}

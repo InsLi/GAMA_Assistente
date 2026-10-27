@@ -64,6 +64,10 @@ body {
   font-size: 12px;
 }
 
+/* Garante que a barra suma quando recebe o atributo hidden.
+   Sem esta regra, o display:flex acima venceria o hidden. */
+.barra-demo[hidden] { display: none; }
+
 /* Botao que abre a demonstracao do painel em outra aba */
 .barra-demo-botao {
   flex: none;

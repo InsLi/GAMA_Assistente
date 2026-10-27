@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <!-- ============================================================
+       PAGINA DE DEMONSTRACAO COMPLETA - GAMA ASISTENTE
+
+       Esta pagina junta as duas metades da demonstracao em uma
+       unica tela, imitando o uso real da extensao:
+
+       - À ESQUERDA: o documento ficticio (leitor de PDF), com os
+         3 eixos e os niveis de 1 a 5 marcados no texto.
+       - À DIREITA: o painel lateral do GAMA Assistente, no
+         mesmo formato e largura (400 px) do side panel real.
+
+       COMO AS DUAS METADES SE COMUNICAM:
+       1. O usuario seleciona um trecho do documento e clica na
+          caixinha que aparece.
+       2. O documento envia uma mensagem (postMessage) para esta
+          pagina, que e a "mae" dos dois quadros (iframes).
+       3. Esta pagina repassa a mensagem para o quadro do painel,
+          que marca o item da triagem e destaca o card do eixo.
+
+       Os estilos estao em demonstracao.css e a logica do
+       repasse de mensagens em demonstracao.js.
+       ============================================================ -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="demonstracao.css" />
+  <title>GAMA Assistente - Demonstração Completa</title>
+</head>
+<body>
+
+  <!-- ============================================================
+       BARRA SUPERIOR DE ORIENTACAO
+       Explica o fluxo em uma frase, para o jurado nao precisar
+       adivinhar o que fazer na demonstracao.
+       ============================================================ -->
+  <header class="topo">
+    <div class="topo-texto">
+      <strong>GAMA Assistente - demonstração completa</strong>
+      <span>
+        Selecione um trecho destacado do documento à esquerda e clique na
+        caixinha: o painel à direita abre a triagem com o item já marcado.
+      </span>
+    </div>
+    <a class="topo-botao" href="documento-demo.html">Abrir só o documento</a>
+  </header>
+
+  <!-- ============================================================
+       PALCO: documento (esquerda) + painel (direita)
+       ============================================================ -->
+  <div class="palco">
+
+    <!-- Quadro 1: documento ficticio estilo PDF.
+         O documento detecta que esta dentro de uma pagina mãe
+         (iframe) e esconde a propria barra de instrucao, pois a
+         barra acima ja cumpre essa funcao. -->
+    <iframe
+      class="palco-documento"
+      src="documento-demo.html"
+      title="Documento fictício de demonstração"
+    ></iframe>
+
+    <!-- Quadro 2: painel lateral do GAMA, no lugar do side
+         panel do navegador. A moldura (.palco-painel) imita o
+         visual do painel real: borda esquerda e sombra. -->
+    <aside class="palco-painel">
+      <iframe
+        src="Hackathon_TJCE_GAMA/Assistent/sidebar.html"
+        title="Painel lateral GAMA Assistente"
+      ></iframe>
+    </aside>
+  </div>
+
+  <!-- Logica que repassa a mensagem do documento para o painel -->
+  <script src="demonstracao.js"></script>
+</body>
+</html>
