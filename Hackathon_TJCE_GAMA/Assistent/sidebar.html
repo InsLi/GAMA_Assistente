@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GAMA Assistente — TJCE</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app">
+
+    <!-- ============================================================
+         FUNDO FALSO: leitor de PDF do processo (fora do painel)
+         ============================================================ -->
+    <div class="doc-reader" aria-hidden="true">
+      <div class="doc-toolbar">
+        <div class="doc-file">
+          <svg viewBox="0 0 24 24" class="ico"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5z"/><path d="M14 3v5h5"/></svg>
+          <span>0801234-56.2026.8.06.0001.pdf</span>
+        </div>
+        <div class="doc-zoom">
+          <span>1 / 12</span>
+          <button type="button">−</button>
+          <button type="button">+</button>
+        </div>
+      </div>
+
+      <div class="doc-canvas">
+        <div class="doc-page">
+          <p class="doc-court">
+            PODER JUDICIÁRIO<br />
+            TRIBUNAL DE JUSTIÇA DO ESTADO DO CEARÁ<br />
+            <span>2ª VARA DA FAZENDA PÚBLICA — COMARCA DE FORTALEZA</span>
+          </p>
+          <p class="doc-proc">PROCESSO Nº 0801234-56.2026.8.06.0001</p>
+          <p class="doc-tag">AUTOR: MINISTÉRIO PÚBLICO DO ESTADO DO CEARÁ</p>
+          <p class="doc-tag">RÉU: CONSTRUTORA VALE VERDE LTDA.</p>
+          <hr />
+          <p class="doc-text">
+            AÇÃO CIVIL PÚBLICA com pedido de tutela provisória, com fundamento na Lei
+            nº 7.347/1985 e na Lei nº 8.078/1990, em face do réu, imputando-lhe a
+            prática de conduta lesiva ao meio ambiente urbano, consistente na
+            ocupação irregular de área de preservação permanente lindeira a
+            curso d&apos;água, com supressão de vegetação nativa e lançamento de
+            resíduos sólidos de construção civil.
+          </p>
+          <p class="doc-text">
+            Alega a parte autora que a atividade exauriu o solo e comprometeu a
+            estabilidade da encosta, expondo a população circundante a risco de
+            deslizamento, especialmente durante o período chuvoso. Requer, em
+            sede de antecipação dos efeitos da tutela, a imediata cessação das
+            obras e a recomposição da área degradada.
+          </p>
+          <p class="doc-text">
+            É o relatório. Passo ao julgamento. Cumpre, preliminarmente,
+            verificar a regularidade processual e a admissibilidade da demanda,
+            observados os parâmetros fixados pela Resolução do Conselho Nacional
+            de Justiça que dispõe sobre a atuação do Poder Judiciário na
+            tutela diferenciada do meio ambiente.
+          </p>
+          <div class="doc-lines">
+            <span style="width:100%"></span><span style="width:97%"></span>
+            <span style="width:99%"></span><span style="width:92%"></span>
+            <span style="width:100%"></span><span style="width:88%"></span>
+            <span style="width:96%"></span><span style="width:71%"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================
+         PAINEL LATERAL — GAMA ASSISTENTE
+         ============================================================ -->
+    <aside class="gama-panel" id="gamaPanel">
+
+      <!-- ===================== VIEW 1 — MENU INICIAL ===================== -->
+      <section class="view is-active" id="view-home" data-view="home">
+        <header class="gama-header">
+          <img src="logo.png" alt="GAMA — Guia de Análise do Meio Ambiente" class="brand-logo" />
+          <span class="brand-chip">TJCE</span>
+        </header>
+
+        <div class="view-body home-body">
+          <div class="home-block">
+            <p class="eyebrow">Bem-vindo(a)</p>
+            <h1 class="home-title">Assistente de Suporte à Tomada de Decisão Judicial</h1>
+            <p class="home-lead">
+              Triagem técnica e matriz de risco para processos ambientais, com
+              base nas Resoluções CNJ nº 345/2020 e nº 460/2022.
+            </p>
+
+            <div class="actions">
+              <button type="button" class="btn btn-green" id="btnNewScreening">
+                <svg viewBox="0 0 24 24" class="ico"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                Iniciar Nova Triagem
+              </button>
+              <button type="button" class="btn btn-outline" id="btnHistory">
+                <svg viewBox="0 0 24 24" class="ico"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+                Consultar Histórico
+              </button>
+            </div>
+          </div>
+
+          <p class="home-foot">
+            <svg viewBox="0 0 24 24" class="ico-sm"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-3z"/></svg>
+            Uso institucional • Dados armazenados neste dispositivo
+          </p>
+        </div>
+      </section>
+
+      <!-- ===================== VIEW 2 — TRIAGEM GUIADA ===================== -->
+      <section class="view" id="view-screening" data-view="screening">
+        <header class="gama-header gama-header--mini">
+          <button type="button" class="icon-btn" data-back="home" aria-label="Voltar">
+            <svg viewBox="0 0 24 24" class="ico"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+          </button>
+          <div class="mini-brand">
+            <strong>GAMA</strong>
+            <span>Guia de Análise do Meio Ambiente</span>
+          </div>
+          <span class="step-chip">Etapa 1/2</span>
+        </header>
+
+        <div class="view-body tinted">
+          <div class="section-head">
+            <h2 class="section-title">Análise do Processo</h2>
+            <p class="section-sub">
+              Marque as condições identificadas nos autos. A matriz de risco
+              consolida os três eixos de análise.
+            </p>
+          </div>
+
+          <div class="process-chip">
+            <span class="process-label">Processo</span>
+            <span class="process-num">0801234-56.2026.8.06.0001</span>
+          </div>
+
+          <!-- Card 1 -->
+          <article class="card">
+            <header class="card-head">
+              <span class="card-icon card-icon--navy">
+                <svg viewBox="0 0 24 24" class="ico"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-3z"/><path d="M12 9v4"/><path d="M12 16h.01"/></svg>
+              </span>
+              <div class="card-titles">
+                <h3>Eixo Geotécnico / Vida</h3>
+                <p>Integridade física e risco à vida</p>
+              </div>
+              <span class="tag tag--navy">Eixo 1</span>
+            </header>
+            <div class="checks">
+              <label class="check-row">
+                <input type="checkbox" data-axis="geo" />
+                <span>Risco iminente de desabamento, deslizamento ou inundação?</span>
+              </label>
+              <label class="check-row">
+                <input type="checkbox" data-axis="geo" />
+                <span>Habitações em área de risco ou estrutura irregularmente implantada?</span>
+              </label>
+            </div>
+          </article>
+
+          <!-- Card 2 -->
+          <article class="card">
+            <header class="card-head">
+              <span class="card-icon card-icon--slate">
+                <svg viewBox="0 0 24 24" class="ico"><path d="M17 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9.5" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              </span>
+              <div class="card-titles">
+                <h3>Eixo Social</h3>
+                <p>Ocupação, vulnerabilidade e conflito</p>
+              </div>
+              <span class="tag tag--slate">Eixo 2</span>
+            </header>
+            <div class="checks">
+              <label class="check-row">
+                <input type="checkbox" data-axis="social" />
+                <span>Presença de grupos vulneráveis ou tempo de ocupação consolidado?</span>
+              </label>
+              <label class="check-row">
+                <input type="checkbox" data-axis="social" />
+                <span>Existência de litígio, conflito social ou interesse de terceiros?</span>
+              </label>
+            </div>
+          </article>
+
+          <!-- Card 3 -->
+          <article class="card">
+            <header class="card-head">
+              <span class="card-icon card-icon--green">
+                <svg viewBox="0 0 24 24" class="ico"><path d="M11 20A7 7 0 0 1 4 13c0-6 5-9 16-9 0 11-4 15-9 15z"/><path d="M4.5 20.5C7 15 11 12 16 10.5"/></svg>
+              </span>
+              <div class="card-titles">
+                <h3>Eixo Ambiental</h3>
+                <p>Proteção da fauna, flora e recursos hídricos</p>
+              </div>
+              <span class="tag tag--green">Eixo 3</span>
+            </header>
+            <div class="checks">
+              <label class="check-row">
+                <input type="checkbox" data-axis="ambiental" />
+                <span>Área de Preservação Permanente (APP) com potencial de regeneração?</span>
+              </label>
+              <label class="check-row">
+                <input type="checkbox" data-axis="ambiental" />
+                <span>Presença de vegetação nativa, fauna sensível ou recurso hídrico?</span>
+              </label>
+            </div>
+          </article>
+        </div>
+
+        <footer class="view-footer">
+          <p class="hint" id="formHint">Marque ao menos um item em cada eixo para processar.</p>
+          <button type="button" class="btn btn-navy" id="btnProcess" disabled>
+            <svg viewBox="0 0 24 24" class="ico"><path d="M12 2l9 5-9 5-9-5 9-5z"/><path d="M3 12l9 5 9-5"/><path d="M3 17l9 5 9-5"/></svg>
+            Processar Matriz de Risco
+          </button>
+        </footer>
+      </section>
+
+      <!-- ===================== VIEW 3 — RESULTADO DA MATRIZ ===================== -->
+      <section class="view" id="view-result" data-view="result">
+        <header class="gama-header gama-header--mini">
+          <button type="button" class="icon-btn" data-back="screening" aria-label="Voltar">
+            <svg viewBox="0 0 24 24" class="ico"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+          </button>
+          <div class="mini-brand">
+            <strong>GAMA</strong>
+            <span>Guia de Análise do Meio Ambiente</span>
+          </div>
+          <span class="step-chip">Etapa 2/2</span>
+        </header>
+
+        <div class="view-body tinted" id="resultBody">
+          <!-- Badge / Alerta -->
+          <div class="alert-badge" role="status">
+            <svg viewBox="0 0 24 24" class="ico-lg"><path d="M12 3l10 17H2L12 3z"/><path d="M12 10v4"/><path d="M12 17h.01"/></svg>
+            <div>
+              <strong>Diagnóstico Amarelo: Suspensão e Concertação</strong>
+              <span>Matriz de risco consolidada nos 3 eixos de análise</span>
+            </div>
+          </div>
+
+          <!-- Fundamentação -->
+          <div class="legal-block">
+            <div class="legal-row">
+              <span class="legal-ico">
+                <svg viewBox="0 0 24 24" class="ico"><path d="M12 3v18"/><path d="M5 7h14"/><path d="M7 7l-3 6a3 3 0 0 0 6 0L7 7z"/><path d="M17 7l-3 6a3 3 0 0 0 6 0l-3-6z"/><path d="M8 21h8"/></svg>
+              </span>
+              <p><strong>Fundamentação Legal:</strong> Resoluções CNJ nº 345/2020 e 460/2022.</p>
+            </div>
+            <div class="legal-row">
+              <span class="legal-ico">
+                <svg viewBox="0 0 24 24" class="ico"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18"/><path d="M8 3v4"/><path d="M16 3v4"/></svg>
+              </span>
+              <p>
+                <strong>Ação sugerida:</strong> Encaminhamento ao CEJUSC
+                <span class="pill">Prazo: 180 dias</span>
+              </p>
+            </div>
+          </div>
+
+          <!-- Editor de minuta -->
+          <div class="editor">
+            <div class="editor-bar">
+              <span class="editor-file">
+                <svg viewBox="0 0 24 24" class="ico-sm"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5z"/><path d="M14 3v5h5"/></svg>
+                Minuta de Decisão
+              </span>
+              <span class="editor-count" id="charCount">0 caracteres</span>
+            </div>
+            <textarea id="minuta" spellcheck="false" aria-label="Minuta de decisão">PROCESSO Nº 0801234-56.2026.8.06.0001
+2ª VARA DA FAZENDA PÚBLICA — COMARCA DE FORTALEZA/CE
+
+Vistos.
+
+1. Trata-se de Ação Civil Pública em que se discute a ocupação de área de preservação permanente (APP) e a supressão de vegetação nativa, com alegado risco à estabilidade da encosta e à incolumidade das pessoas residentes no entorno.
+
+2. A análise técnica realizada mediante o GAMA — Guia de Análise do Meio Ambiente apontou Diagnóstico AMARELO (Suspensão e Concertação), consubstanciado nos seguintes achados:
+
+   a) risco geotécnico potencializado pelo relevo e pela impermeabilização do solo;
+   b) presença de ocupação consolidada com grupos vulneráveis;
+   c) APP com capacidade de regeneração natural da vegetação.
+
+3. O referido diagnóstico orienta a atuação do juízo no âmbito da Resolução CNJ nº 345/2020, que institui a Política Nacional de Justiça e Meio Ambiente, e da Resolução CNJ nº 460/2022, que disciplina a atuação do Poder Judiciário na tutela diferenciada do meio ambiente, priorizando medidas restaurativas e a solução consensual de conflitos.
+
+ANTE O EXPOSTO, com fundamento no art. 225 da Constituição Federal, na Lei nº 7.347/1985 e nas Resoluções CNJ nº 345/2020 e nº 460/2022, RESOLVO:
+
+1. SUSPENDER o prosseguimento dos atos exequtórios, até a superação da fase de concertação;
+
+2. ENCAMINHAR as partes ao CEJUSC — Centro Judiciário de Solução de Conflitos e de Mediação, para instauração de procedimento de concertação, no prazo de 180 (cento e oitenta) dias;
+
+3. DETERMINAR a produção de prova pericial técnica específica sobre a estabilidade da encosta e o potencial de regeneração da área;
+
+4. DESIGNAR audiência especial para o 90º (nonagésimo) dia, a fim de avaliar o adimplemento das medidas pactuadas.
+
+Intimem-se.</textarea>
+          </div>
+        </div>
+
+        <footer class="view-footer">
+          <button type="button" class="btn btn-navy" id="btnCopy">
+            <svg viewBox="0 0 24 24" class="ico" id="copyIcon"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg>
+            <span id="copyLabel">Copiar Minuta de Decisão</span>
+          </button>
+        </footer>
+      </section>
+
+      <!-- Toast -->
+      <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    </aside>
+  </div>
+
+  <script src="sidebar.js"></script>
+</body>
+</html>
