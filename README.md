@@ -81,13 +81,23 @@ Também é possível abrir o arquivo `Hackathon_TJCE_GAMA/Assistent/sidebar.html
 GAMA_Assistente/
 ├── Hackathon_TJCE_GAMA/
 │   └── Assistent/
-│       ├── manifest.json      Manifesto da extensão (Manifest V3)
-│       ├── background.js      Comportamento do painel lateral
-│       ├── sidebar.html       Interface com as três telas
-│       ├── styles.css         Estilos e identidade visual
-│       ├── sidebar.js         Navegação e regras de negócio
-│       └── logo.png           Logotipo do projeto
-├── logo.png                   Logotipo do projeto
+│       ├── manifest.json         Manifesto da extensão (Manifest V3)
+│       ├── background.js         Comportamento do painel lateral
+│       ├── content.js            Detecção do número de processo na página
+│       ├── sidebar.html          Interface com as três telas
+│       ├── sidebar.js            Navegação e regras de negócio
+│       ├── css/
+│       │   ├── base.css          Variáveis, reset e ícones
+│       │   ├── painel.css        Estrutura do painel lateral
+│       │   ├── botoes.css        Botões de todas as telas
+│       │   ├── tela-inicial.css  Tela 1: menu inicial
+│       │   ├── triagem.css       Tela 2: triagem guiada
+│       │   ├── resultado.css     Tela 3: matriz de risco
+│       │   └── conteudo.css      Botão discreto injetado nas páginas
+│       └── logo.png              Logotipo do projeto
+├── index.html                    Página de entrada da demonstração
+├── index.css                     Estilos da página de entrada
+├── logo.png                      Logotipo do projeto
 ├── Modelo_Pitch.md            Apresentação do projeto
 ├── Modelo_Pitch.pdf           Apresentação do projeto (PDF)
 ├── Ideia_MVP.pdf              Conceito do MVP
@@ -98,7 +108,9 @@ GAMA_Assistente/
 ## Recursos técnicos
 
 - Extensão para navegador no padrão Manifest V3, com painel lateral (side panel).
+- Detecção automática do número do processo na página aberta, com botão discreto do GAMA no canto da tela.
 - HTML, CSS e JavaScript puros, sem dependências externas ou bibliotecas.
+- CSS dividido em arquivos menores por tela, todos comentados em português.
 - Identidade visual institucional: azul marinho `#002E63`, verde natureza `#1E824C` e cabeçalho em tom de menta.
 - Layout responsivo dentro dos limites de largura de um painel lateral de extensão.
 - Minuta de decisão copiável para a área de transferência.

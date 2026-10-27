@@ -1,66 +1,47 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+  <!-- ============================================================
+       PAGINA DE ENTRADA DO GITHUB PAGES
+       Esta pagina existe apenas para receber o visitante e
+       redireciona automaticamente para a demonstracao real,
+       que fica no arquivo sidebar.html dentro da pasta
+       Hackathon_TJCE_GAMA/Assistent.
+       Os estilos estao em um arquivo separado: index.css
+       ============================================================ -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Redirecionamento automatico do navegador para a demo -->
   <meta http-equiv="refresh" content="0; url=Hackathon_TJCE_GAMA/Assistent/sidebar.html" />
+
+  <!-- Link canonico: ajuda buscadores a entender o destino real -->
   <link rel="canonical" href="Hackathon_TJCE_GAMA/Assistent/sidebar.html" />
-  <title>GAMA Assistente — Demonstração</title>
-  <style>
-    html, body {
-      height: 100%;
-      margin: 0;
-    }
-    body {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 14px;
-      background: linear-gradient(125deg, #e7f7e6 0%, #d6f1d1 100%);
-      color: #002e63;
-      font-family: "Inter", "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI",
-        system-ui, Arial, sans-serif;
-      text-align: center;
-      padding: 24px;
-    }
-    h1 {
-      margin: 0;
-      font-size: 26px;
-      font-weight: 800;
-      letter-spacing: 0.02em;
-    }
-    p {
-      margin: 0;
-      max-width: 460px;
-      color: #3f5570;
-      font-size: 15px;
-      line-height: 1.6;
-    }
-    a {
-      display: inline-block;
-      margin-top: 6px;
-      padding: 12px 22px;
-      border-radius: 8px;
-      background: #1e824c;
-      color: #fff;
-      font-size: 15px;
-      font-weight: 700;
-      text-decoration: none;
-      box-shadow: 0 5px 14px rgba(30, 130, 76, 0.28);
-    }
-    a:hover {
-      background: #196f41;
-    }
-  </style>
+
+  <!-- Folha de estilo externa (nada de CSS embutido aqui) -->
+  <link rel="stylesheet" href="index.css" />
+
+  <title>GAMA Assistente - Demonstracao</title>
 </head>
 <body>
+  <!-- Titulo exibido durante o breve instante do carregamento -->
   <h1>GAMA Assistente</h1>
+
+  <!-- Explicacao breve do projeto para quem chega pelo link -->
   <p>
-    Guia de Análise do Meio Ambiente — assistente de suporte à tomada de decisão
-    judicial do TJCE. Carregando a demonstração...
+    Guia de Analise do Meio Ambiente - assistente de suporte a tomada de
+    decisao judicial do TJCE. Carregando a demonstracao...
   </p>
-  <a href="Hackathon_TJCE_GAMA/Assistent/sidebar.html">Abrir demonstração</a>
+
+  <!-- Botao de reserva: caso o JavaScript esteja bloqueado,
+       o visitante ainda consegue chegar na demo clicando aqui -->
+  <a href="Hackathon_TJCE_GAMA/Assistent/sidebar.html">Abrir demonstracao</a>
+
+  <!--
+    Redirecionamento por JavaScript. E mais rapido e confiavel
+    do que apenas a meta tag de refresh acima. As duas vias
+    existem para garantir que o visitante sempre chegue na demo.
+  -->
   <script>
     window.location.replace("Hackathon_TJCE_GAMA/Assistent/sidebar.html");
   </script>

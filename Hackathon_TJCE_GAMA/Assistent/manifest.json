@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "GAMA Assistente",
-  "description": "Guia de Análise do Meio Ambiente — Assistente de suporte à tomada de decisão judicial (TJCE).",
+  "description": "Guia de Analise do Meio Ambiente - Assistente de suporte a tomada de decisao judicial (TJCE).",
   "version": "1.0.0",
   "minimum_chrome_version": "114",
   "action": {
@@ -13,5 +13,13 @@
   "background": {
     "service_worker": "background.js"
   },
-  "permissions": ["sidePanel", "clipboardWrite"]
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "css": ["css/conteudo.css"],
+      "run_at": "document_idle"
+    }
+  ],
+  "permissions": ["sidePanel", "clipboardWrite", "storage"]
 }

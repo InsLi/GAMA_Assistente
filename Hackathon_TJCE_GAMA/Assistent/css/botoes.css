@@ -1,0 +1,91 @@
+/* ============================================================
+   ARQUIVO: botoes.css
+   O que este arquivo cuida:
+   - Estilo base de todos os botoes grandes (.btn)
+   - Variante verde (acao principal de inicio)
+   - Variante contorno (acao secundaria)
+   - Variante azul marinho (acao final de cada tela)
+   - Estados: hover, foco, pressionado e desabilitado
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   1) BASE DO BOTAO
+   Todos os botoes usam a classe .btn. A cor muda conforme a
+   variante adicionada ao lado (btn-green, btn-outline, btn-navy).
+   ------------------------------------------------------------ */
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;                 /* Espaco entre o icone e o texto */
+  width: 100%;              /* Ocupa toda a largura do painel */
+  padding: 13px 16px;
+  border: 1.5px solid transparent;
+  border-radius: var(--radius);
+  font-family: inherit;     /* Usa a mesma fonte do corpo */
+  font-size: 14.5px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  transition: background 0.16s ease, box-shadow 0.16s ease,
+    transform 0.08s ease, opacity 0.16s ease;
+}
+
+/* Efeito de subida de 1px ao clicar (sensacao de botao fisico) */
+.btn:active:not(:disabled) { transform: translateY(1px); }
+
+/* Anel de foco para quem usa teclado (acessibilidade) */
+.btn:focus-visible {
+  outline: 2px solid rgba(0, 46, 99, 0.4);
+  outline-offset: 2px;
+}
+
+/* ------------------------------------------------------------
+   2) VARIANTE VERDE - "Iniciar Nova Triagem"
+   Verde Natureza (#1E824C), a cor secundaria do projeto.
+   ------------------------------------------------------------ */
+.btn-green {
+  background: var(--green);
+  color: #fff;
+  box-shadow: 0 5px 14px rgba(30, 130, 76, 0.28); /* Sombra verde suave */
+}
+.btn-green:hover { background: var(--green-600); } /* Escurece no mouse */
+
+/* ------------------------------------------------------------
+   3) VARIANTE CONTORNO (outline) - "Consultar Historico"
+   Fundo transparente com borda azul marinho.
+   ------------------------------------------------------------ */
+.btn-outline {
+  background: transparent;
+  color: var(--navy);
+  border-color: var(--navy);
+}
+.btn-outline:hover { background: var(--navy-050); } /* Azul bem fraco */
+
+/* ------------------------------------------------------------
+   4) VARIANTE AZUL MARINHO - acao final da tela
+   ("Processar Matriz de Risco" e "Copiar Minuta de Decisao")
+   ------------------------------------------------------------ */
+.btn-navy {
+  background: var(--navy);
+  color: #fff;
+  box-shadow: 0 5px 14px rgba(0, 46, 99, 0.26);
+}
+.btn-navy:hover:not(:disabled) { background: var(--navy-600); }
+
+/* ------------------------------------------------------------
+   5) ESTADOS ESPECIAIS
+   ------------------------------------------------------------ */
+
+/* Desabilitado: usado quando a triagem ainda exige marcacoes */
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;      /* Cursor de "nao pode clicar" */
+  box-shadow: none;
+}
+
+/* Sucesso: aplicado temporariamente ao copiar a minuta */
+.btn.is-success {
+  background: var(--green);
+  box-shadow: 0 5px 14px rgba(30, 130, 76, 0.28);
+}

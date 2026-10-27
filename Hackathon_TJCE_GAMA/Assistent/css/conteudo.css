@@ -1,0 +1,68 @@
+/* ============================================================
+   ARQUIVO: conteudo.css
+   O que este arquivo cuida:
+   - Botao discreto do GAMA que aparece dentro da pagina aberta
+   - Ele e injetado pelo content script (content.js)
+   - Por isso usa IDs com prefixo "gama-" para nao conflitar com
+     os estilos do proprio site visitado
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   1) BOTAO FLUTUANTE
+   Posicionado de forma fixa no canto inferior direito da
+   pagina. O z-index altissimo garante que ele fique por cima
+   da maior parte dos elementos do site.
+   ------------------------------------------------------------ */
+#gama-botao-flutuante {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 2147483646; /* Quase o valor maximo possivel */
+
+  /* Aparencia do botao */
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 999px;
+  background: #002e63;                 /* Azul marinho institucional */
+  color: #ffffff;
+  font-family: "Inter", "Roboto", -apple-system, "Segoe UI", system-ui, Arial,
+    sans-serif;
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+  transition: background 0.15s ease, transform 0.12s ease;
+}
+
+/* Realce ao passar o mouse */
+#gama-botao-flutuante:hover {
+  background: #013d80;
+  transform: translateY(-1px);
+}
+
+/* Efeito de "pressionado" ao clicar */
+#gama-botao-flutuante:active {
+  transform: translateY(0);
+}
+
+/* Anel de foco para quem navega por teclado */
+#gama-botao-flutuante:focus-visible {
+  outline: 2px solid #1e824c;
+  outline-offset: 2px;
+}
+
+/* ------------------------------------------------------------
+   2) MARCA VERDE (bolinha) DENTRO DO BOTAO
+   Referencia a cor verde natureza da identidade visual.
+   ------------------------------------------------------------ */
+#gama-botao-flutuante .gama-botao-ponto {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #1e824c;
+  box-shadow: 0 0 0 3px rgba(30, 130, 76, 0.35);
+}

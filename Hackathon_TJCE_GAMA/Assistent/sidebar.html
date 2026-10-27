@@ -3,21 +3,32 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>GAMA Assistente — TJCE</title>
-  <link rel="stylesheet" href="styles.css" />
+  <title>GAMA Assistente - TJCE</title>
+
+  <!-- ============================================================
+       FOLHAS DE ESTILO (quebradas em arquivos menores)
+       A ordem importa: base primeiro (variaveis e reset) e
+       depois os arquivos que dependem dela.
+       ============================================================ -->
+  <link rel="stylesheet" href="css/base.css" />        <!-- Variaveis, reset, icones -->
+  <link rel="stylesheet" href="css/painel.css" />      <!-- Estrutura do painel lateral -->
+  <link rel="stylesheet" href="css/botoes.css" />      <!-- Botoes de todas as telas -->
+  <link rel="stylesheet" href="css/tela-inicial.css" /><!-- Tela 1: menu inicial -->
+  <link rel="stylesheet" href="css/triagem.css" />     <!-- Tela 2: triagem guiada -->
+  <link rel="stylesheet" href="css/resultado.css" />   <!-- Tela 3: matriz de risco -->
 </head>
 <body>
   <div class="app">
 
     <!-- ============================================================
-         PAINEL LATERAL — GAMA ASSISTENTE
+         PAINEL LATERAL - GAMA ASSISTENTE
          ============================================================ -->
     <aside class="gama-panel" id="gamaPanel">
 
-      <!-- ===================== VIEW 1 — MENU INICIAL ===================== -->
+      <!-- ===================== VIEW 1 - MENU INICIAL ===================== -->
       <section class="view is-active" id="view-home" data-view="home">
         <header class="gama-header">
-          <img src="logo.png" alt="GAMA — Guia de Análise do Meio Ambiente" class="brand-logo" />
+          <img src="logo.png" alt="GAMA - Guia de Análise do Meio Ambiente" class="brand-logo" />
           <span class="brand-chip">TJCE</span>
         </header>
 
@@ -49,7 +60,7 @@
         </div>
       </section>
 
-      <!-- ===================== VIEW 2 — TRIAGEM GUIADA ===================== -->
+      <!-- ===================== VIEW 2 - TRIAGEM GUIADA ===================== -->
       <section class="view" id="view-screening" data-view="screening">
         <header class="gama-header gama-header--mini">
           <button type="button" class="icon-btn" data-back="home" aria-label="Voltar">
@@ -164,7 +175,7 @@
         </footer>
       </section>
 
-      <!-- ===================== VIEW 3 — RESULTADO DA MATRIZ ===================== -->
+      <!-- ===================== VIEW 3 - RESULTADO DA MATRIZ ===================== -->
       <section class="view" id="view-result" data-view="result">
         <header class="gama-header gama-header--mini">
           <button type="button" class="icon-btn" data-back="screening" aria-label="Voltar">
@@ -183,7 +194,7 @@
             <span class="alert-ico" id="alertIcon"></span>
             <div>
               <strong id="diagTitle">Diagnóstico Amarelo: Suspensão e Concertação</strong>
-              <span class="diag-sub" id="diagSub">Risco mitigável — suspensão e saneamento / TAC</span>
+              <span class="diag-sub" id="diagSub">Risco mitigável - suspensão e saneamento / TAC</span>
             </div>
           </div>
 
@@ -216,34 +227,15 @@
               </span>
               <span class="editor-count" id="charCount">0 caracteres</span>
             </div>
-            <textarea id="minuta" spellcheck="false" aria-label="Minuta de decisão">PROCESSO Nº 0801234-56.2026.8.06.0001
-2ª VARA DA FAZENDA PÚBLICA — COMARCA DE FORTALEZA/CE
-
-Vistos.
-
-1. Trata-se de Ação Civil Pública em que se discute a ocupação de área de preservação permanente (APP) e a supressão de vegetação nativa, com alegado risco à estabilidade da encosta e à incolumidade das pessoas residentes no entorno.
-
-2. A análise técnica realizada mediante o GAMA — Guia de Análise do Meio Ambiente apontou Diagnóstico AMARELO (Suspensão e Concertação), consubstanciado nos seguintes achados:
-
-   a) risco geotécnico potencializado pelo relevo e pela impermeabilização do solo;
-   b) presença de ocupação consolidada com grupos vulneráveis;
-   c) APP com capacidade de regeneração natural da vegetação.
-
-3. O referido diagnóstico orienta a atuação do juízo no âmbito da Resolução CNJ nº 345/2020, que institui a Política Nacional de Justiça e Meio Ambiente, e da Resolução CNJ nº 460/2022, que disciplina a atuação do Poder Judiciário na tutela diferenciada do meio ambiente, priorizando medidas restaurativas, o saneamento da área e a solução consensual de conflitos, podendo ser adotado Termo de Ajustamento de Conduta (TAC).
-
-ANTE O EXPOSTO, com fundamento no art. 225 da Constituição Federal, na Lei nº 7.347/1985 e nas Resoluções CNJ nº 345/2020 e nº 460/2022, RESOLVO:
-
-1. SUSPENDER o prosseguimento dos atos exequtórios, até a superação da fase de concertação;
-
-2. ENCAMINHAR as partes ao CEJUSC — Centro Judiciário de Solução de Conflitos e de Mediação, para instauração de procedimento de concertação, no prazo de 180 (cento e oitenta) dias;
-
-3. DETERMINAR a suspensão das atividades na área e o saneamento do local, com possibilidade de celebração de Termo de Ajustamento de Conduta (TAC) junto ao Ministério Público;
-
-4. DETERMINAR a produção de prova pericial técnica específica sobre a estabilidade da encosta e o potencial de regeneração da área;
-
-5. DESIGNAR audiência especial para o 90º (nonagésimo) dia, a fim de avaliar o adimplemento das medidas pactuadas.
-
-Intimem-se.</textarea>
+            <!--
+              ATENCAO: a caixa de texto abaixo nasce VAZIA de
+              proposito. O JavaScript (sidebar.js) preenche a
+              minuta quando o usuario clica em
+              "Processar Matriz de Risco", escolhendo o texto
+              conforme a cor do semaforo (vermelho, amarelo
+              ou verde).
+            -->
+            <textarea id="minuta" spellcheck="false" aria-label="Minuta de decisão"></textarea>
           </div>
         </div>
 

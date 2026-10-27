@@ -1,0 +1,84 @@
+/* ============================================================
+   ARQUIVO: tela-inicial.css
+   O que este arquivo cuida:
+   - Estrutura da TELA 1 (Menu Inicial / Home)
+   - Texto de boas-vindas
+   - Area dos dois botoes principais
+   - Rodape informativo da tela
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   1) CORPO DA TELA INICIAL
+   justify-content: centraliza o conteudo verticalmente,
+   deixando a boas-vindas e os botoes no meio do painel.
+   ------------------------------------------------------------ */
+.home-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;  /* Centraliza na vertical */
+  gap: 26px;                /* Espaco entre o bloco e o rodape */
+}
+
+/* ------------------------------------------------------------
+   2) TEXTO DE DESTAQUE ACIMA DO TITULO
+   ("BEM-VINDO(A)" em letras maiusculas e verdes)
+   ------------------------------------------------------------ */
+.eyebrow {
+  margin: 0 0 6px;
+  color: var(--green);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase; /* Deixa o texto em caixa alta */
+}
+
+/* ------------------------------------------------------------
+   3) TITULO PRINCIPAL
+   "Assistente de Suporte a Tomada de Decisao Judicial"
+   ------------------------------------------------------------ */
+.home-title {
+  margin: 0;
+  color: var(--navy);
+  font-size: 21px;
+  font-weight: 800;
+  line-height: 1.3;      /* Espaco entre as linhas do titulo */
+  letter-spacing: -0.01em;
+}
+
+/* ------------------------------------------------------------
+   4) PARAGRAFO DE APOIO
+   Explica o que a ferramenta faz e cita as Resolucoes do CNJ.
+   ------------------------------------------------------------ */
+.home-lead {
+  margin: 10px 0 0;
+  color: var(--muted);
+  font-size: 13.5px;
+  line-height: 1.6;
+}
+
+/* ------------------------------------------------------------
+   5) AREA DOS BOTOES
+   Empilha os dois botoes na vertical (Iniciar e Consultar).
+   ------------------------------------------------------------ */
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;   /* Espaco entre um botao e outro */
+  margin-top: 26px;
+}
+
+/* ------------------------------------------------------------
+   6) RODAPE DA TELA INICIAL
+   Linha discreta com o icone de escudo e a nota de uso
+   institucional / privacidade dos dados.
+   ------------------------------------------------------------ */
+.home-foot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  margin: 0;
+  color: #94a3b8;
+  font-size: 11px;
+  text-align: center;
+}

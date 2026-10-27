@@ -1,0 +1,139 @@
+/* ============================================================
+   ARQUIVO: base.css
+   O que este arquivo cuida:
+   - Variaveis de cor e medidas usadas em todo o projeto
+   - Regras de reinicio (reset) do HTML
+   - Fonte tipografica geral da interface
+   - Icones em SVG usados nos botoes e nos cards
+   - Estilizacao da barra de rolagem (scrollbar)
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   1) VARIAVEIS DE ESTILO (design tokens)
+   Sao definidas em :root, ou seja, valem para a pagina inteira.
+   Para usar em outro lugar basta escrever var(--nome-da-variavel).
+   ------------------------------------------------------------ */
+:root {
+  /* --- Identidade visual do GAMA --- */
+
+  /* Cor primaria: textos de destaque, bordas e botoes de acao final */
+  --navy: #002e63;
+  --navy-600: #013d80;      /* Versao mais clara, usada no hover */
+  --navy-050: rgba(0, 46, 99, 0.06); /* Azul bem fraco, para fundos suaves */
+
+  /* Cor secundaria: botoes de inicio, checkboxes e icones de destaque */
+  --green: #1e824c;
+  --green-600: #196f41;     /* Versao mais escura, usada no hover */
+  --green-050: rgba(30, 130, 76, 0.10); /* Verde bem fraco, para fundos */
+
+  /* Tom de menta usado no cabecalho (baseado no fundo da logo) */
+  --mint-100: #e7f7e6;
+  --mint-200: #d6f1d1;
+  --mint-border: rgba(0, 46, 99, 0.09);
+
+  /* Amarelo do semaforo de risco (diagnostico intermediario) */
+  --amber: #ffd24a;
+  --amber-deep: #f3b81d;
+  --amber-ink: #002e63;     /* Cor do texto sobre o amarelo (azul marinho) */
+
+  /* Tons neutros de texto e de fundo */
+  --ink: #16202e;           /* Texto principal */
+  --muted: #64748b;         /* Texto secundario (legendas) */
+  --line: #e6ebf2;          /* Linhas de separacao entre blocos */
+  --tint: #f4f7fa;          /* Fundo levemente acinzentado das telas */
+  --white: #ffffff;
+
+  /* Medidas e sombras reaproveitadas */
+  --radius: 8px;                                   /* Raio de canto padrao */
+  --shadow-md: 0 4px 14px rgba(15, 23, 42, 0.07);  /* Sombra dos cards */
+  --shadow-panel: -10px 0 30px rgba(15, 23, 42, 0.10); /* Sombra do painel */
+}
+
+/* ------------------------------------------------------------
+   2) RESET MINIMO
+   Garante que tudo caiba dentro do elemento pai e remove a
+   margem padrao que o navegador da nos elementos.
+   ------------------------------------------------------------ */
+* { box-sizing: border-box; }
+
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+/* ------------------------------------------------------------
+   3) TIPOGRAFIA GERAL
+   Fontes corporativas limpas. A ordem e importante: se o usuario
+   nao tiver Inter nem Roboto, o navegador usa a fonte do sistema.
+   ------------------------------------------------------------ */
+body {
+  font-family: "Inter", "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    system-ui, "Helvetica Neue", Arial, sans-serif;
+  font-size: 14px;
+  color: var(--ink);
+  background: #dfe3e8; /* Fundo neutro atras do painel */
+  -webkit-font-smoothing: antialiased;      /* Texto mais nítido no Mac */
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ------------------------------------------------------------
+   4) ICONES SVG
+   Os icones vem do HTML com a classe .ico (tamanho padrao).
+   As variantes .ico-sm (menor) e .ico-lg (maior) alteram so o tamanho.
+   Todas usam currentColor, ou seja, herdam a cor do texto ao redor.
+   ------------------------------------------------------------ */
+.ico {
+  width: 18px;
+  height: 18px;
+  flex: none;          /* Impede que o icone encolha dentro de flex */
+  fill: none;          /* Sem preenchimento (sao contornos) */
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.ico-sm {
+  width: 14px;
+  height: 14px;
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.ico-lg {
+  width: 26px;
+  height: 26px;
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* ------------------------------------------------------------
+   5) BARRA DE ROLAGEM (SCROLLBAR)
+   Deixa a barra de rolagem fina e discreta, combinando com o
+   visual institucional do painel.
+   ------------------------------------------------------------ */
+.view-body::-webkit-scrollbar,
+.editor textarea::-webkit-scrollbar { width: 9px; }
+
+.view-body::-webkit-scrollbar-thumb,
+.editor textarea::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: padding-box; /* Deixa a bolinha da rolagem com "margem" */
+}
+.view-body::-webkit-scrollbar-thumb:hover,
+.editor textarea::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+  background-clip: padding-box;
+}
+.view-body::-webkit-scrollbar-track,
+.editor textarea::-webkit-scrollbar-track {
+  background: transparent; /* Trilho da rolagem invisivel */
+}
