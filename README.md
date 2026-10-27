@@ -27,13 +27,29 @@ Objetivos do projeto:
 - Facilitar a análise de processos e a tomada de decisão.
 - Reduzir o prazo de resolução das demandas.
 
+## Protótipo / MVP
+
+1. Acionamento discreto no navegador, por meio de extensão lateral que não interrompe a consulta ao processo.
+2. Triagem guiada do processo por checklist estruturado.
+3. Análise em três eixos: Geotécnico, Social e Ambiental.
+
+## Matriz de decisão: o semáforo de risco
+
+Cada cor aponta o caminho jurídico mais adequado.
+
+- **Vermelho**: risco à vida. Desocupação assistida urgente.
+- **Amarelo**: risco mitigável. Suspensão e saneamento / TAC.
+- **Verde**: consolidado. Permanência condicionada / ReurbS.
+
+Critério adotado no MVP, de forma determinística e explicável: qualquer marcação no eixo Geotécnico / Vida resulta em diagnóstico vermelho; na ausência de marcações nesse eixo, marcações no eixo Social resultam em amarelo; marcações restritas ao eixo Ambiental resultam em verde. Cada diagnóstico gera a fundamentação legal, a ação sugerida e a minuta de decisão correspondentes.
+
 ## Telas do assistente
 
 A interface é um painel lateral fixo à direita, exibido ao lado do leitor de processo em PDF.
 
 1. **Menu inicial** — apresentação da ferramenta com as ações "Iniciar Nova Triagem" e "Consultar Histórico".
-2. **Triagem guiada** — formulário estruturado em três blocos de análise, com validação por eixo antes do processamento.
-3. **Resultado da matriz** — diagnóstico em semáforo, fundamentação legal, ação sugerida e editor com minuta de decisão pré-preenchida, pronta para copiar.
+2. **Triagem guiada** — formulário estruturado em três blocos de análise, com legenda do semáforo e validação antes do processamento.
+3. **Resultado da matriz** — diagnóstico em semáforo (vermelho, amarelo ou verde), fundamentação legal, ação sugerida e editor com minuta de decisão pré-preenchida, pronta para copiar.
 
 ## Eixos de análise
 
@@ -41,7 +57,7 @@ A interface é um painel lateral fixo à direita, exibido ao lado do leitor de p
 - **Eixo Social** — grupos vulneráveis, tempo de ocupação consolidado, litígio e conflito de interesses.
 - **Eixo Ambiental** — área de preservação permanente (APP) com potencial de regeneração, vegetação nativa, fauna e recursos hídricos.
 
-O MVP implementa o **Diagnóstico Amarelo: Suspensão e Concertação**, com fundamento nas Resoluções CNJ nº 345/2020 e nº 460/2022 e encaminhamento ao CEJUSC no prazo de 180 dias.
+O eixo escolhido no checklist define a cor do semáforo e, com ela, a fundamentação legal, a ação sugerida e a minuta de decisão apresentadas na tela de resultado. Consulte a seção "Matriz de decisão" acima.
 
 ## Demonstração online
 

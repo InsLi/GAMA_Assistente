@@ -135,6 +135,12 @@
             <span class="process-num">0801234-56.2026.8.06.0001</span>
           </div>
 
+          <div class="legend" role="note" aria-label="Legenda da matriz de risco">
+            <span class="legend-item"><i class="dot dot--red"></i>Vermelho · risco à vida</span>
+            <span class="legend-item"><i class="dot dot--amber"></i>Amarelo · risco mitigável</span>
+            <span class="legend-item"><i class="dot dot--green"></i>Verde · consolidado</span>
+          </div>
+
           <!-- Card 1 -->
           <article class="card">
             <header class="card-head">
@@ -209,7 +215,7 @@
         </div>
 
         <footer class="view-footer">
-          <p class="hint" id="formHint">Marque ao menos um item em cada eixo para processar.</p>
+          <p class="hint" id="formHint">Marque ao menos uma condição identificada nos autos para processar.</p>
           <button type="button" class="btn btn-navy" id="btnProcess" disabled>
             <svg viewBox="0 0 24 24" class="ico"><path d="M12 2l9 5-9 5-9-5 9-5z"/><path d="M3 12l9 5 9-5"/><path d="M3 17l9 5 9-5"/></svg>
             Processar Matriz de Risco
@@ -232,11 +238,11 @@
 
         <div class="view-body tinted" id="resultBody">
           <!-- Badge / Alerta -->
-          <div class="alert-badge" role="status">
-            <svg viewBox="0 0 24 24" class="ico-lg"><path d="M12 3l10 17H2L12 3z"/><path d="M12 10v4"/><path d="M12 17h.01"/></svg>
+          <div class="alert-badge alert-badge--amber" id="diagnosisBadge" role="status">
+            <span class="alert-ico" id="alertIcon"></span>
             <div>
-              <strong>Diagnóstico Amarelo: Suspensão e Concertação</strong>
-              <span>Matriz de risco consolidada nos 3 eixos de análise</span>
+              <strong id="diagTitle">Diagnóstico Amarelo: Suspensão e Concertação</strong>
+              <span class="diag-sub" id="diagSub">Risco mitigável — suspensão e saneamento / TAC</span>
             </div>
           </div>
 
@@ -253,8 +259,9 @@
                 <svg viewBox="0 0 24 24" class="ico"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18"/><path d="M8 3v4"/><path d="M16 3v4"/></svg>
               </span>
               <p>
-                <strong>Ação sugerida:</strong> Encaminhamento ao CEJUSC
-                <span class="pill">Prazo: 180 dias</span>
+                <strong>Ação sugerida:</strong>
+                <span id="actionText">Encaminhamento ao CEJUSC</span>
+                <span class="pill" id="actionPill">Prazo: 180 dias</span>
               </p>
             </div>
           </div>
@@ -281,7 +288,7 @@ Vistos.
    b) presença de ocupação consolidada com grupos vulneráveis;
    c) APP com capacidade de regeneração natural da vegetação.
 
-3. O referido diagnóstico orienta a atuação do juízo no âmbito da Resolução CNJ nº 345/2020, que institui a Política Nacional de Justiça e Meio Ambiente, e da Resolução CNJ nº 460/2022, que disciplina a atuação do Poder Judiciário na tutela diferenciada do meio ambiente, priorizando medidas restaurativas e a solução consensual de conflitos.
+3. O referido diagnóstico orienta a atuação do juízo no âmbito da Resolução CNJ nº 345/2020, que institui a Política Nacional de Justiça e Meio Ambiente, e da Resolução CNJ nº 460/2022, que disciplina a atuação do Poder Judiciário na tutela diferenciada do meio ambiente, priorizando medidas restaurativas, o saneamento da área e a solução consensual de conflitos, podendo ser adotado Termo de Ajustamento de Conduta (TAC).
 
 ANTE O EXPOSTO, com fundamento no art. 225 da Constituição Federal, na Lei nº 7.347/1985 e nas Resoluções CNJ nº 345/2020 e nº 460/2022, RESOLVO:
 
@@ -289,9 +296,11 @@ ANTE O EXPOSTO, com fundamento no art. 225 da Constituição Federal, na Lei nº
 
 2. ENCAMINHAR as partes ao CEJUSC — Centro Judiciário de Solução de Conflitos e de Mediação, para instauração de procedimento de concertação, no prazo de 180 (cento e oitenta) dias;
 
-3. DETERMINAR a produção de prova pericial técnica específica sobre a estabilidade da encosta e o potencial de regeneração da área;
+3. DETERMINAR a suspensão das atividades na área e o saneamento do local, com possibilidade de celebração de Termo de Ajustamento de Conduta (TAC) junto ao Ministério Público;
 
-4. DESIGNAR audiência especial para o 90º (nonagésimo) dia, a fim de avaliar o adimplemento das medidas pactuadas.
+4. DETERMINAR a produção de prova pericial técnica específica sobre a estabilidade da encosta e o potencial de regeneração da área;
+
+5. DESIGNAR audiência especial para o 90º (nonagésimo) dia, a fim de avaliar o adimplemento das medidas pactuadas.
 
 Intimem-se.</textarea>
           </div>
