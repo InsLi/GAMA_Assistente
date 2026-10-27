@@ -45,7 +45,7 @@ Critério adotado no MVP, de forma determinística e explicável: qualquer marca
 
 ## Telas do assistente
 
-A interface é um painel lateral fixo à direita, exibido ao lado do leitor de processo em PDF.
+A interface é um painel lateral fixo à direita, no formato do painel lateral (side panel) do navegador, com largura máxima de 400 px.
 
 1. **Menu inicial** — apresentação da ferramenta com as ações "Iniciar Nova Triagem" e "Consultar Histórico".
 2. **Triagem guiada** — formulário estruturado em três blocos de análise, com legenda do semáforo e validação antes do processamento.
