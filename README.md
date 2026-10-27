@@ -47,15 +47,15 @@ Critério adotado no MVP, de forma determinística e explicável: qualquer marca
 
 A interface é um painel lateral fixo à direita, no formato do painel lateral (side panel) do navegador, com largura máxima de 400 px.
 
-1. **Menu inicial** — apresentação da ferramenta com as ações "Iniciar Nova Triagem" e "Consultar Histórico".
-2. **Triagem guiada** — formulário estruturado em três blocos de análise, com legenda do semáforo e validação antes do processamento.
-3. **Resultado da matriz** — diagnóstico em semáforo (vermelho, amarelo ou verde), fundamentação legal, ação sugerida e editor com minuta de decisão pré-preenchida, pronta para copiar.
+1. **Menu inicial** - apresentação da ferramenta com as ações "Iniciar Nova Triagem" e "Consultar Histórico".
+2. **Triagem guiada** - formulário estruturado em três blocos de análise, com legenda do semáforo e validação antes do processamento.
+3. **Resultado da matriz** - diagnóstico em semáforo (vermelho, amarelo ou verde), fundamentação legal, ação sugerida e editor com minuta de decisão pré-preenchida, pronta para copiar.
 
 ## Eixos de análise
 
-- **Eixo Geotécnico / Vida** — risco de desabamento, deslizamento ou inundação e habitações em área de risco.
-- **Eixo Social** — grupos vulneráveis, tempo de ocupação consolidado, litígio e conflito de interesses.
-- **Eixo Ambiental** — área de preservação permanente (APP) com potencial de regeneração, vegetação nativa, fauna e recursos hídricos.
+- **Eixo Geotécnico / Vida** - risco de desabamento, deslizamento ou inundação e habitações em área de risco.
+- **Eixo Social** - grupos vulneráveis, tempo de ocupação consolidado, litígio e conflito de interesses.
+- **Eixo Ambiental** - área de preservação permanente (APP) com potencial de regeneração, vegetação nativa, fauna e recursos hídricos.
 
 O eixo escolhido no checklist define a cor do semáforo e, com ela, a fundamentação legal, a ação sugerida e a minuta de decisão apresentadas na tela de resultado. Consulte a seção "Matriz de decisão" acima.
 
@@ -118,20 +118,20 @@ GAMA_Assistente/
 
 ## Fundamentação
 
-- Resolução CNJ nº 345/2020 — Política Nacional de Justiça e Meio Ambiente.
-- Resolução CNJ nº 460/2022 — atuação do Poder Judiciário na tutela diferenciada do meio ambiente.
+- Resolução CNJ nº 345/2020 - Política Nacional de Justiça e Meio Ambiente.
+- Resolução CNJ nº 460/2022 - atuação do Poder Judiciário na tutela diferenciada do meio ambiente.
 - Art. 225 da Constituição Federal.
 
 ## Equipe
 
-- **Carla Nayanna** — Mestranda em Avaliação de Políticas Públicas, Assistente Social, Especialista em Políticas Públicas.
-- **Josias Batista** — Engenheiro de Software (UFC Campus Quixadá).
-- **Inês Lima** — Engenharia de Computação.
+- **Carla Nayanna** - Mestranda em Avaliação de Políticas Públicas, Assistente Social, Especialista em Políticas Públicas.
+- **Josias Batista** - Engenheiro de Software (UFC Campus Quixadá).
+- **Inês Lima** - Engenharia de Computação.
 
 ## Documentos do projeto
 
-- `Modelo_Pitch.md` e `Modelo_Pitch.pdf` — apresentação do projeto.
-- `Ideia_MVP.pdf` — conceito do MVP.
+- `Modelo_Pitch.md` e `Modelo_Pitch.pdf` - apresentação do projeto.
+- `Ideia_MVP.pdf` - conceito do MVP.
 
 ## Licença
 
