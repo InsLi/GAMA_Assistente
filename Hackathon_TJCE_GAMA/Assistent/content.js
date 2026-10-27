@@ -139,16 +139,18 @@
   /* --------------------------------------------------------
      6) PONTE COM O DOCUMENTO FICTICIO (demonstracao)
      O arquivo documento-demo.html mostra uma caixinha quando o
-     usuario seleciona um trecho marcado. Ao clicar na caixinha,
-     ela dispara um evento personalizado chamado "gama:abrir"
-     com o eixo e o nivel (1 a 5) na propria pagina.
+     usuario seleciona um trecho. Ao ESCOLHER o eixo na
+     caixinha, ela dispara um evento personalizado chamado
+     "gama:abrir" com o EIXO e o TEXTO na propria pagina.
 
      Aqui fazemos duas coisas:
      a) Marcamos a pagina com data-gama-extensao="1" no <html>,
         para a caixinha saber que a extensao esta instalada e
         disparar o evento em vez de abrir uma aba nova.
-     b) Ouvimos o evento e repassamos a sugestao para a
-        extensao (TRIAGEM_SUGERIDA) e abrimos o painel.
+     b) Ouvimos o evento e repassamos o trecho para a
+        extensao (ANOTACAO_RECEBIDA) e abrimos o painel.
+        O NIVEL de risco (1 a 5) NAO vem aqui: ele e
+        escolhido pelo usuario dentro do proprio painel.
      -------------------------------------------------------- */
 
   /**
@@ -158,21 +160,22 @@
     // a) Marca a pagina como "extensao presente".
     document.documentElement.setAttribute("data-gama-extensao", "1");
 
-    // b) Ouve o clique na caixinha do documento ficticio.
+    // b) Ouve a escolha do eixo na caixinha do documento ficticio.
     document.addEventListener("gama:abrir", (evento) => {
       const detalhe = (evento && evento.detail) || {};
       const eixo = detalhe.eixo;   // "geo" | "social" | "ambiental"
-      const nivel = detalhe.nivel; // 1 a 5
+      const texto = detalhe.texto; // Trecho completo selecionado
 
-      if (!eixo) return; // Evento sem dados: nada a fazer
+      if (!eixo || !texto) return; // Evento sem dados: nada a fazer
 
-      // Envia a sugestao para o painel e depois pede a abertura.
+      // Envia o trecho + eixo para o painel e depois pede a
+      // abertura do painel lateral (side panel).
       enviarParaExtensao({
-        tipo: "TRIAGEM_SUGERIDA",
+        tipo: "ANOTACAO_RECEBIDA",
         eixo,
-        nivel,
-        // O numero do processo do proprio documento ficticio,
-        // para a minuta sair preenchida na demonstracao.
+        texto,
+        // Numero do processo do proprio documento ficticio,
+        // para o chip sair preenchido na demonstracao.
         numero: "0801234-56.2026.8.06.0001",
       });
       enviarParaExtensao({ tipo: "ABRIR_PAINEL", numero: "0801234-56.2026.8.06.0001" });

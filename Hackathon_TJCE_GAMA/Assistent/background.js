@@ -59,16 +59,18 @@ chrome.runtime.onMessage.addListener((mensagem, remetente, responder) => {
   }
 
   /* --------------------------------------------------------
-     2b) PAGINA FICTICIA SUGERE UM ITEM DA TRIAGEM
-     O content script repassa eixo e nivel lidos na caixinha do
-     documento de demonstracao. Guardamos a sugestao no
+     2b) PAGINA ENVIou UM TRECHO SELECIONADO COM EIXO
+     O content script repassa o TEXTO e o EIXO escolhidos pelo
+     usuario na caixinha do documento de demonstracao. O nivel
+     de risco (1 a 5) NAO vem aqui: ele sera escolhido pelo
+     usuario dentro do proprio painel. Guardamos o trecho no
      armazenamento para o painel lateral aplicar quando abrir.
      -------------------------------------------------------- */
-  if (mensagem.tipo === "TRIAGEM_SUGERIDA") {
+  if (mensagem.tipo === "ANOTACAO_RECEBIDA") {
     chrome.storage.local.set({
-      sugestao: {
+      anotacao: {
         eixo: mensagem.eixo,   // "geo" | "social" | "ambiental"
-        nivel: mensagem.nivel, // 1 a 5
+        texto: mensagem.texto, // Trecho completo selecionado
         recebidoEm: Date.now(),
       },
     });

@@ -3,9 +3,13 @@
    O que este arquivo cuida:
    - Visual do documento ficticio (simula uma folha de PDF)
    - Barra de instrucao no topo da pagina
-   - Legenda dos eixos e dos niveis de risco
-   - Marcas de fundo dos trechos por eixo (geo, social, ambiental)
-   - Caixinha (popup) que aparece ao selecionar o texto
+   - Caixinha (popup) de selecao, com a escolha do EIXO feita
+     pelo usuario (3 botoes) e sem nenhum nivel pré-definido
+   - Aviso para quem abriu sem a extensao
+
+   Observação: este arquivo NAO contem estilos de legenda de
+   niveis nem de trechos marcados, porque o texto do documento
+   e normal (marcacao e feita pelo usuario, nao pelo arquivo).
    ============================================================ */
 
 /* ------------------------------------------------------------
@@ -85,85 +89,7 @@ body {
 .barra-demo-botao:hover { background: #196f41; }
 
 /* ------------------------------------------------------------
-   3) LEGENDA DOS EIXOS E DOS NIVEIS
-   Duas linhas de informacao: quais cores representam cada eixo
-   e o que significa cada nivel de 1 a 5.
-   ------------------------------------------------------------ */
-.legenda {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px 32px;
-  max-width: 940px;
-  margin: 22px auto 0;
-  padding: 12px 18px;
-  background: #ffffff;
-  border: 1px solid #e6ebf2;
-  border-radius: 8px;
-  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.07);
-}
-
-.legenda-grupo {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px 14px;
-}
-
-.legenda-titulo {
-  color: #64748b;
-  font-size: 10.5px;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.legenda-item {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  color: #475569;
-  font-size: 11.5px;
-  font-weight: 700;
-}
-
-/* Bolinha colorida que identifica o eixo */
-.ponto {
-  width: 10px;
-  height: 10px;
-  flex: none;
-  display: inline-block;
-  border-radius: 50%;
-  border: 1px solid rgba(15, 23, 42, 0.18);
-}
-.ponto--geo { background: #dc2626; }        /* Vermelho: vida */
-.ponto--social { background: #002e63; }     /* Azul marinho: social */
-.ponto--ambiental { background: #1e824c; }  /* Verde: ambiental */
-
-/* Bolinha do nivel: o numero aparece dentro via ::before */
-.nivel {
-  width: 18px;
-  height: 18px;
-  flex: none;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  color: #fff;
-  font-size: 10px;
-  font-weight: 800;
-  font-style: normal;
-}
-.nivel::before { content: attr(data-nivel); }
-
-/* Escala de cinza do claro ao critico (1 a 5) */
-.nivel--1 { background: #94a3b8; }
-.nivel--2 { background: #64a56b; }
-.nivel--3 { background: #f3b81d; }
-.nivel--4 { background: #ea8c1c; }
-.nivel--5 { background: #dc2626; }
-
-/* ------------------------------------------------------------
-   4) FOLHAS DO DOCUMENTO (simula paginas de PDF)
+   3) FOLHAS DO DOCUMENTO (simula paginas de PDF)
    Fundo branco, sombra suave e margem interna generosa, como
    uma pagina impressa. A fonte vira serifa para lembrar um
    documento oficial datilografado.
@@ -258,93 +184,22 @@ body {
 }
 
 /* ------------------------------------------------------------
-   5) TRECHOS MARCADOS (selecionaveis)
-   Cada trecho tem data-eixo (geo, social ou ambiental) e
-   data-nivel (1 a 5). A cor de fundo lembra um texto grifado
-   e muda conforme o eixo. O ponto colorido no inicio ajuda
-   a identificar o eixo antes mesmo de selecionar.
-   ------------------------------------------------------------ */
-.trecho {
-  cursor: text;
-  border-bottom: 2px dotted rgba(0, 0, 0, 0.18);
-  transition: filter 0.15s ease;
-}
-.trecho:hover { filter: brightness(0.97); }
-
-.trecho--geo {
-  background: rgba(220, 38, 38, 0.10);
-  border-bottom-color: rgba(220, 38, 38, 0.45);
-}
-.trecho--social {
-  background: rgba(0, 46, 99, 0.09);
-  border-bottom-color: rgba(0, 46, 99, 0.4);
-}
-.trecho--ambiental {
-  background: rgba(30, 130, 76, 0.11);
-  border-bottom-color: rgba(30, 130, 76, 0.45);
-}
-
-/* Destaque aplicado pela caixinha: pisca o trecho escolhido */
-.trecho--ativo {
-  outline: 2px solid #002e63;
-  outline-offset: 2px;
-}
-
-/* ------------------------------------------------------------
-   6) QUADRO-REFERENCIA (tabela de niveis)
-   Tabela simples com linhas zebradas. Nao recebe marcacao
-   de selecao (nao tem data-eixo), entao a caixinha nao abre.
-   ------------------------------------------------------------ */
-.quadro {
-  width: 100%;
-  border-collapse: collapse;
-  margin: 8px 0 18px;
-  font-size: 13.5px;
-}
-
-.quadro th,
-.quadro td {
-  padding: 8px 10px;
-  border: 1px solid #c9d2dd;
-  text-align: left;
-  vertical-align: top;
-}
-
-.quadro thead th {
-  background: #002e63;
-  color: #ffffff;
-  font-family: "Inter", "Roboto", Arial, sans-serif;
-  font-size: 12px;
-  font-weight: 800;
-  letter-spacing: 0.03em;
-}
-
-.quadro tbody tr:nth-child(even) td { background: #f4f7fa; }
-
-/* Coluna do nivel com a bolinha colorida */
-.quadro-nivel {
-  width: 54px;
-  text-align: center !important;
-  font-weight: 800;
-  color: #002e63;
-}
-
-/* ------------------------------------------------------------
-   7) CAIXINHA DE SELECAO (popup)
-   Aparece ancorada a posicao da selecao do usuario. Fica com
-   z-index alto para nunca ficar atras do documento.
+   4) CAIXINHA DE SELECAO (popup)
+   Aparece quando o usuario seleciona QUALQUER trecho do texto.
+   O texto do documento e normal: a caixinha pergunta qual o
+   eixo daquele trecho e o USUARIO escolhe um dos 3 botoes.
+   Nao ha nivel aqui: o nivel (1 a 5) e definido no painel.
    ------------------------------------------------------------ */
 .gama-popup {
   position: absolute;        /* Posicionada em relacao ao documento */
   z-index: 50;
-  width: 268px;
-  padding: 11px 13px;
+  width: 276px;
+  padding: 12px 13px;
   background: #ffffff;
   border: 1px solid rgba(0, 46, 99, 0.16);
   border-radius: 8px;
   box-shadow: 0 12px 30px rgba(15, 23, 42, 0.24);
   font-family: "Inter", "Roboto", Arial, sans-serif;
-  cursor: pointer;
   /* Animacao de entrada discreta */
   opacity: 0;
   transform: translateY(6px);
@@ -358,69 +213,109 @@ body {
   transform: translateY(0);
 }
 
-/* Linha superior: eixo (com bolinha) e nivel */
-.gama-popup-topo {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-}
-
-.gama-popup-eixo {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  color: #002e63;
-  font-size: 13px;
-  font-weight: 800;
-}
-
-/* Etiqueta do nivel com a cor da escala 1 a 5 */
-.gama-popup-nivel {
-  padding: 2px 9px;
-  border-radius: 999px;
+/* Recorte do texto que o usuario selecionou (2 linhas no maximo) */
+.gama-popup-trecho {
+  margin: 0 0 8px;
+  padding: 7px 9px;
   background: #f4f7fa;
-  border: 1px solid #e6ebf2;
-  color: #334155;
-  font-size: 11px;
-  font-weight: 800;
-  white-space: nowrap;
-}
-
-/* Texto de exemplo do nivel, logo abaixo do eixo */
-.gama-popup-exemplo {
-  margin: 7px 0 9px;
-  color: #64748b;
+  border-left: 3px solid #002e63;
+  border-radius: 4px;
+  color: #475569;
   font-size: 11.5px;
   line-height: 1.45;
+  font-style: italic;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;     /* Corta apos 2 linhas */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
-/* Rodape da caixinha: chamada para acao */
+/* Pergunta que orienta a escolha do eixo */
+.gama-popup-pergunta {
+  margin: 0 0 7px;
+  color: #002e63;
+  font-size: 12.5px;
+  font-weight: 800;
+}
+
+/* Lista vertical com os 3 botoes de eixo */
+.gama-popup-eixos {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* Botao de cada eixo: borda na cor do eixo, texto escuro */
+.eixo-botao {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 10px;
+  border: 1.5px solid #e6ebf2;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #334155;
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.14s ease, background 0.14s ease,
+    transform 0.08s ease;
+}
+.eixo-botao:hover { background: #f8fafc; }
+.eixo-botao:active { transform: translateY(1px); }
+.eixo-botao:focus-visible {
+  outline: 2px solid rgba(0, 46, 99, 0.4);
+  outline-offset: 2px;
+}
+
+/* Realce da borda conforme o eixo, no hover */
+.eixo-botao--geo:hover { border-color: #dc2626; }
+.eixo-botao--social:hover { border-color: #002e63; }
+.eixo-botao--ambiental:hover { border-color: #1e824c; }
+
+/* Bolinha colorida que identifica o eixo (mesma da demo antiga) */
+.ponto {
+  width: 10px;
+  height: 10px;
+  flex: none;
+  display: inline-block;
+  border-radius: 50%;
+  border: 1px solid rgba(15, 23, 42, 0.18);
+}
+.ponto--geo { background: #dc2626; }        /* Vermelho: vida */
+.ponto--social { background: #002e63; }     /* Azul marinho: social */
+.ponto--ambiental { background: #1e824c; }  /* Verde: ambiental */
+
+/* Rodape da caixinha: orientacao do proximo passo */
 .gama-popup-acao {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 8px;
+  margin-top: 9px;
   padding-top: 8px;
   border-top: 1px solid #eef2f7;
-  color: #1e824c;
-  font-size: 12px;
-  font-weight: 800;
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 600;
 }
 
 .gama-popup-acao .ico {
-  width: 15px;
-  height: 15px;
+  width: 14px;
+  height: 14px;
   flex: none;
   fill: none;
-  stroke: currentColor;
+  stroke: #1e824c;
   stroke-width: 2;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
 
 /* ------------------------------------------------------------
-   8) AVISO PARA QUEM ABRIU A DEMO SEM A EXTENSAO
+   5) AVISO PARA QUEM ABRIU A DEMO SEM A EXTENSAO
    Aparece uma unica vez, no canto inferior esquerdo, avisando
    que a extensao GAMA nao esta instalada neste navegador.
    ------------------------------------------------------------ */
@@ -442,7 +337,7 @@ body {
 .gama-aviso strong { color: #d6f1d1; }
 
 /* ------------------------------------------------------------
-   9) RESPONSIVO
+   6) RESPONSIVO
    Em telas estreitas a folha perde as margens laterais e a
    barra de instrucao vira coluna unica.
    ------------------------------------------------------------ */
@@ -452,5 +347,5 @@ body {
     align-items: flex-start;
   }
   .folha { padding: 34px 22px 36px; font-size: 15px; }
-  .gama-popup { width: 236px; }
+  .gama-popup { width: 240px; }
 }

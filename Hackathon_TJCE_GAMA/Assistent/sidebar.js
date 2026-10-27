@@ -4,15 +4,21 @@
    O "cérebro" da interface. Este arquivo roda dentro do
    painel lateral (sidebar.html) e cuida de toda a interação:
    trocar de tela, validar o checklist, calcular o semáforo,
-   preencher a minuta e copiar o texto.
+   preencher a minuta e copiar o texto. Tambem recebe os
+   trechos selecionados no documento, deixa o usuario escolher
+   o nivel de risco (1 a 5) e salva as anotacoes no
+   localStorage (historico).
 
    COMO ESTA ORGANIZADO:
-   1. Navegacao entre as 3 telas
+   1. Navegacao entre as 4 telas
    2. Aviso temporario (toast)
    3. TELA 1 - Menu inicial
    4. TELA 2 - Triagem guiada (checklist e validacao)
    5. TELA 3 - Resultado (semáforo, ação e minuta)
    6. Integracao com a pagina aberta (numero do processo)
+   7. Caixa de anotacao (trecho + eixo + nivel 1 a 5)
+   8. Historico de anotacoes (localStorage)
+   9. Vias de entrada da anotacao (URL, postMessage, extensao)
    ============================================================ */
 
 /* ------------------------------------------------------------
@@ -82,10 +88,11 @@ document.getElementById("btnNewScreening").addEventListener("click", () => {
   showView("screening");
 });
 
-// Botao "Consultar Historico": por enquanto apenas avisa que
-// ainda nao ha triagens salvas neste dispositivo.
+// Botao "Consultar Historico": renderiza a lista de anotacoes
+// salvas (localStorage) e abre a TELA 4 (historico).
 document.getElementById("btnHistory").addEventListener("click", () => {
-  toast("Nenhuma triagem registrada neste dispositivo.");
+  renderizarHistorico();
+  showView("history");
 });
 
 // Todos os botoes com data-back (voltar) da tela 2 e da tela 3.
@@ -452,50 +459,56 @@ if (TEM_EXTENSAO) {
     });
   }
 
-  // 6b) Fica ouvindo mensagens enquanto o painel estiver aberto,
-  // para atualizar o numero em tempo real.
+  // 6b) Fica ouvindo mensagens enquanto o painel estiver aberto.
   if (chrome.runtime && chrome.runtime.onMessage) {
     chrome.runtime.onMessage.addListener((mensagem) => {
       if (mensagem && mensagem.tipo === "PROCESSO_ENCONTRADO") {
         atualizarNumeroProcesso(mensagem.numero);
       }
 
-      // 6b-i) O documento ficticio sugere um item da triagem.
-      if (mensagem && mensagem.tipo === "TRIAGEM_SUGERIDA") {
-        aplicarSugestao(mensagem.eixo, mensagem.nivel);
+      // 6b-i) O documento (ou a pagina aberta) enviou um trecho
+      // com o eixo escolhido pelo usuario. O nivel sera
+      // escolhido aqui dentro, no seletor da caixa de anotacao.
+      if (mensagem && mensagem.tipo === "ANOTACAO_RECEBIDA") {
+        receberAnotacao(mensagem.eixo, mensagem.texto);
       }
     });
   }
 
-  // 6c) Le uma sugestao guardada pelo background ao abrir o painel.
+  // 6c) Le uma anotacao pendente guardada pelo background.
   if (chrome.storage && chrome.storage.local) {
-    chrome.storage.local.get("sugestao").then((dados) => {
-      if (dados && dados.sugestao && dados.sugestao.eixo) {
-        aplicarSugestao(dados.sugestao.eixo, dados.sugestao.nivel);
-        // Limpa a sugestao para ela nao reaparecer em aberturas
-        // futuras sem novo clique no documento.
-        chrome.storage.local.remove("sugestao");
+    chrome.storage.local.get("anotacao").then((dados) => {
+      if (dados && dados.anotacao && dados.anotacao.eixo) {
+        receberAnotacao(dados.anotacao.eixo, dados.anotacao.texto);
+        // Limpa para ela nao reaparecer em aberturas futuras
+        // sem novo envio do documento.
+        chrome.storage.local.remove("anotacao");
       }
     });
   }
 }
 
 /* ------------------------------------------------------------
-   7) SUGESTAO DE TRIAGEM VINDA DO DOCUMENTO FICTICIO
-   Quando o usuario seleciona um trecho no documento de
-   demonstracao e clica na caixinha, o painel recebe o eixo e o
-   nivel (1 a 5). Aqui aplicamos essa sugestao:
-   - Troca para a TELA 2 (triagem guiada)
-   - Marca automaticamente os checkboxes do eixo indicado,
-     conforme o nivel (regra na tabela MAPEAMENTO_NIVEL)
-   - Destaca o card do eixo e mostra um aviso (toast)
+   7) CAIXA DE ANOTACAO (trecho + eixo + nivel)
+   Quando o usuario seleciona um trecho no documento e escolhe
+   o eixo na caixinha, o painel recebe o TEXTO e o EIXO. O
+   NIVEL de risco (1 a 5) NAO vem do documento: ele e
+   escolhido pelo usuario aqui dentro, no seletor da caixa.
+
+   Fluxo desta secao:
+   1. receberAnotacao(eixo, texto): mostra a caixa na TELA 2.
+   2. Usuario clica em um nivel (1 a 5) no seletor.
+   3. Usuario clica em "Salvar anotacao":
+      - grava no localStorage (lista "gama_anotacoes")
+      - marca os checkboxes do eixo conforme o nivel
+        (regra na tabela MAPEAMENTO_NIVEL)
+      - esconde a caixa e mostra o toast
 
    REGRA DO MAPEAMENTO (nivel -> itens marcados):
    - Nivel 1: nenhum item marcado (risco irrelevante nao gera
-     marcacao, mas o card e aberto para conferencia do juiz)
-   - Nivel 2 ou 3: apenas o segundo item do eixo (risco leve
-     ou moderado)
-   - Nivel 4 ou 5: os dois itens do eixo (risco alto ou critico)
+     marcacao, mas a anotacao fica salva no historico)
+   - Nivel 2 ou 3: apenas o segundo item do eixo
+   - Nivel 4 ou 5: os dois itens do eixo
    ------------------------------------------------------------ */
 
 // Tabela fixa: cada nivel indica quais caixas do eixo marcar.
@@ -509,58 +522,167 @@ const MAPEAMENTO_NIVEL = {
   5: [0, 1],  // Os dois itens do eixo
 };
 
-// Rotulos legiveis de cada eixo, usados no aviso (toast).
+// Rotulos legiveis de cada eixo (caixa, historico e toasts).
 const ROTULOS_EIXO = {
   geo: "Geotécnico / Vida",
   social: "Social",
   ambiental: "Ambiental",
 };
 
+// Nomes dos niveis de risco (mesma escala do documento).
+const ROTULOS_NIVEL = {
+  1: "irrelevante",
+  2: "baixo",
+  3: "moderado",
+  4: "alto",
+  5: "crítico",
+};
+
+// Cores das bolinhas dos eixos (iguais as do documento).
+const CORES_EIXO = {
+  geo: "#dc2626",
+  social: "#002e63",
+  ambiental: "#1e824c",
+};
+
+// Elementos da caixa de anotacao (sidebar.html).
+const anotacaoBox = document.getElementById("anotacaoBox");
+const anotacaoPonto = document.getElementById("anotacaoPonto");
+const anotacaoEixoNome = document.getElementById("anotacaoEixoNome");
+const anotacaoTrecho = document.getElementById("anotacaoTrecho");
+const anotacaoFechar = document.getElementById("anotacaoFechar");
+const btnSalvarAnotacao = document.getElementById("btnSalvarAnotacao");
+const botoesNivel = document.querySelectorAll(".nivel-btn");
+
+// Estado atual da anotacao em edição (null = nenhuma aberta).
+let anotacaoAtual = null; // { eixo, texto, nivel }
+
 /**
- * Aplica uma sugestao de triagem na TELA 2.
+ * Recebe um trecho + eixo e abre a caixa de anotacao na TELA 2.
+ * O nivel permanece NULO: o usuario escolhe no seletor.
  * @param {string} eixo "geo" | "social" | "ambiental"
- * @param {number|string} nivel de 1 a 5
+ * @param {string} texto trecho completo selecionado
  */
-function aplicarSugestao(eixo, nivel) {
+function receberAnotacao(eixo, texto) {
   // Protecao: so aceitamos os 3 eixos conhecidos.
-  if (!MAPEAMENTO_NIVEL || !["geo", "social", "ambiental"].includes(eixo)) {
+  if (!["geo", "social", "ambiental"].includes(eixo)) return;
+  if (!texto) return;
+
+  // Guarda o estado em edição (nivel ainda nao escolhido).
+  anotacaoAtual = { eixo, texto: texto.trim(), nivel: null };
+
+  // Preenche a caixa: bolinha + nome do eixo + recorte do texto.
+  anotacaoPonto.style.background = CORES_EIXO[eixo];
+  anotacaoEixoNome.textContent = ROTULOS_EIXO[eixo];
+  anotacaoTrecho.textContent = anotacaoAtual.texto;
+
+  // Reinicia o seletor de nivel (nenhum escolhido) e desabilita
+  // o botao de salvar ate que um nivel seja selecionado.
+  botoesNivel.forEach((botao) => botao.classList.remove("is-escolhido"));
+  btnSalvarAnotacao.disabled = true;
+
+  // Mostra a caixa e abre a TELA 2 (triagem guiada).
+  anotacaoBox.hidden = false;
+  showView("screening");
+
+  // Leva a caixa para a area visivel (a tela 2 pode ter rolagem).
+  anotacaoBox.scrollIntoView({ behavior: "smooth", block: "start" });
+
+  // Avisa o usuario do proximo passo.
+  toast("Trecho recebido. Escolha o nível de risco e salve.");
+}
+
+// Cada botao do seletor: ao clicar, marca o nivel escolhido.
+botoesNivel.forEach((botao) => {
+  botao.addEventListener("click", () => {
+    if (!anotacaoAtual) return; // Sem anotacao aberta, ignora
+
+    // Remove a marca de todos e aplica so no clicado.
+    botoesNivel.forEach((b) => b.classList.remove("is-escolhido"));
+    botao.classList.add("is-escolhido");
+
+    // Guarda o nivel (1 a 5) e libera o botao de salvar.
+    anotacaoAtual.nivel = Number(botao.dataset.nivel);
+    btnSalvarAnotacao.disabled = false;
+  });
+});
+
+// Botao "Salvar anotacao": grava no historico e marca os
+// checkboxes do eixo conforme o nivel escolhido.
+btnSalvarAnotacao.addEventListener("click", () => {
+  // Protecao: precisa ter anotacao aberta E nivel escolhido.
+  if (!anotacaoAtual || !anotacaoAtual.nivel) {
+    toast("Escolha o nível de risco antes de salvar.");
     return;
   }
 
-  // Converte para numero e valida a faixa (1 a 5).
-  const nivelNum = Math.min(5, Math.max(1, Number(nivel) || 1));
-  const posicoes = MAPEAMENTO_NIVEL[nivelNum];
+  const { eixo, texto, nivel } = anotacaoAtual;
 
-  // Busca todas as caixas do eixo, na ordem em que aparecem no HTML.
+  // 7a) GRAVA NO LOCALSTORAGE (lista de anotacoes do historico).
+  // A chave "gama_anotacoes" guarda um ARRAY de objetos.
+  const anotacoes = lerAnotacoes();
+  anotacoes.unshift({
+    id: Date.now(),          // Identificador unico (epoch em ms)
+    eixo,
+    nivel,
+    texto,
+    criadoEm: new Date().toISOString(), // Data ISO para exibir
+  });
+  // JSON.stringify transforma o array em texto para salvar.
+  localStorage.setItem("gama_anotacoes", JSON.stringify(anotacoes));
+
+  // 7b) MARCA OS CHECKBOXS DO EIXO conforme o nivel.
+  aplicarNivelNoEixo(eixo, nivel);
+
+  // 7c) Fecha a caixa e confirma com toast.
+  fecharAnotacao();
+  toast(
+    `Anotação salva: ${ROTULOS_EIXO[eixo]} nível ${nivel} (${ROTULOS_NIVEL[nivel]}).`
+  );
+});
+
+// Botao de fechar (X): descarta a anotacao sem salvar.
+anotacaoFechar.addEventListener("click", () => {
+  fecharAnotacao();
+  toast("Anotação descartada.");
+});
+
+/** Esconde a caixa de anotacao e limpa o estado em edicao. */
+function fecharAnotacao() {
+  anotacaoBox.hidden = true;
+  anotacaoAtual = null;
+  botoesNivel.forEach((botao) => botao.classList.remove("is-escolhido"));
+  btnSalvarAnotacao.disabled = true;
+}
+
+/**
+ * Marca os checkboxes do eixo conforme o nivel escolhido,
+ * usando a tabela MAPEAMENTO_NIVEL.
+ * @param {string} eixo "geo" | "social" | "ambiental"
+ * @param {number} nivel de 1 a 5
+ */
+function aplicarNivelNoEixo(eixo, nivel) {
+  // Busca todas as caixas do eixo, na ordem do HTML.
   const caixasDoEixo = [
     ...document.querySelectorAll(`#view-screening input[data-axis="${eixo}"]`),
   ];
 
-  // Primeiro desmarca tudo do eixo (evita marcas de uma sugestao anterior).
+  // Primeiro desmarca tudo do eixo (limpa marcas anteriores).
   caixasDoEixo.forEach((caixa) => {
     caixa.checked = false;
   });
 
   // Depois marca as posicoes indicadas pelo nivel.
+  const posicoes = MAPEAMENTO_NIVEL[nivel] || [];
   posicoes.forEach((posicao) => {
     if (caixasDoEixo[posicao]) caixasDoEixo[posicao].checked = true;
   });
 
-  // Revalida o botao "Processar Matriz de Risco" da tela 2.
+  // Revalida o botao "Processar Matriz de Risco".
   updateProcessButton();
 
   // Destaca o card do eixo para o usuario ver onde olhar.
   destacaCardDoEixo(eixo);
-
-  // Abre a TELA 2 (triagem guiada) com a sugestao aplicada.
-  showView("screening");
-
-  // Avisa o usuario do que foi preenchido automaticamente.
-  toast(
-    nivelNum === 1
-      ? `Sugestão: ${ROTULOS_EIXO[eixo]} com nível 1 (irrelevante). Confira e processe.`
-      : `Sugestão aplicada: ${ROTULOS_EIXO[eixo]} nível ${nivelNum}.`
-  );
 }
 
 /**
@@ -589,51 +711,155 @@ function destacaCardDoEixo(eixo) {
 }
 
 /* ------------------------------------------------------------
-   8) SUGESTAO VIA URL (demonstracao sem extensao instalada)
-   Quando a extensao nao esta instalada, a caixinha do documento
-   abre este painel em outra aba com os parametros na URL, por
-   exemplo: sidebar.html?eixo=geo&nivel=5
-   Aqui lemos esses parametros e aplicamos a mesma sugestao.
+   8) HISTORICO DE ANOTACOES (tela 4)
+   As anotacoes ficam gravadas no localStorage do navegador,
+   na chave "gama_anotacoes" (um array de objetos). Aqui
+   lemos essa lista e desenhamos os cards na tela 4.
    ------------------------------------------------------------ */
+
+/**
+ * Le a lista de anotacoes salvas no localStorage.
+ * @returns {Array} array de anotacoes (vazio se nao houver)
+ */
+function lerAnotacoes() {
+  // JSON.parse transforma o texto de volta em array.
+  // Se nao existir nada, devolve uma lista vazia.
+  try {
+    const bruto = localStorage.getItem("gama_anotacoes");
+    return bruto ? JSON.parse(bruto) : [];
+  } catch (erro) {
+    // JSON corrompido: recomeça do zero em vez de quebrar.
+    return [];
+  }
+}
+
+/** Monta a lista de cards da TELA 4 (historico). */
+function renderizarHistorico() {
+  const cont = document.getElementById("historyList");
+  const anotacoes = lerAnotacoes();
+
+  // Estado vazio: nenhuma anotacao salva ainda.
+  if (anotacoes.length === 0) {
+    cont.innerHTML = `
+      <div class="history-vazio">
+        <strong>Nenhuma anotação salva</strong>
+        <span>
+          Selecione um trecho do documento, escolha o eixo na
+          caixinha, defina o nível no painel e salve. As
+          anotações aparecerão aqui.
+        </span>
+      </div>`;
+    return;
+  }
+
+  // Monta o HTML de cada card (usamos template literals).
+  cont.innerHTML = anotacoes
+    .map((anot) => {
+      // Data formatada no padrão brasileiro (curto).
+      const data = new Date(anot.criadoEm).toLocaleString("pt-BR", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+
+      // Recorte do texto para o card (2 linhas no maximo).
+      let recorte = anot.texto;
+      if (recorte.length > 180) recorte = recorte.slice(0, 180) + "...";
+
+      return `
+        <article class="hist-card" data-id="${anot.id}">
+          <div class="hist-topo">
+            <span class="hist-eixo">
+              <i class="ponto" style="background:${CORES_EIXO[anot.eixo] || "#64748b"}"></i>
+              ${ROTULOS_EIXO[anot.eixo] || anot.eixo}
+            </span>
+            <span class="hist-nivel" data-nivel="${anot.nivel}">
+              Nível ${anot.nivel} · ${ROTULOS_NIVEL[anot.nivel] || ""}
+            </span>
+            <span class="hist-data">${data}</span>
+          </div>
+          <p class="hist-trecho">${recorte}</p>
+          <div class="hist-rodape">
+            <button type="button" class="hist-remover" data-remover="${anot.id}">
+              <svg viewBox="0 0 24 24" class="ico-sm" style="width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+              Remover
+            </button>
+          </div>
+        </article>`;
+    })
+    .join(""); // Junta todos os cards em um unico HTML
+}
+
+// Delegacao de eventos: um unico ouvinte para todos os
+// botoes "Remover" (mesmo que a lista seja recriada).
+document.getElementById("historyList").addEventListener("click", (evento) => {
+  const botao = evento.target.closest("[data-remover]");
+  if (!botao) return;
+
+  const id = Number(botao.dataset.remover);
+  const restantes = lerAnotacoes().filter((anot) => anot.id !== id);
+
+  // Grava a lista ja sem a anotacao removida.
+  localStorage.setItem("gama_anotacoes", JSON.stringify(restantes));
+
+  // Redesenha a lista e avisa o usuario.
+  renderizarHistorico();
+  toast("Anotação removida do histórico.");
+});
+
+// Botao "Limpar historico": apaga TODAS as anotacoes salvas.
+document.getElementById("btnClearHistory").addEventListener("click", () => {
+  if (lerAnotacoes().length === 0) {
+    toast("O histórico já está vazio.");
+    return;
+  }
+  localStorage.removeItem("gama_anotacoes");
+  renderizarHistorico();
+  toast("Histórico limpo.");
+});
+
+/* ------------------------------------------------------------
+   9) RECAO DAS VIAS DE ENTRADA DA ANOTACAO
+   Existem 4 formas de um trecho chegar ao painel. Todas
+   chamam a mesma funcao: receberAnotacao(eixo, texto).
+
+   9a) URL (demonstracao sem extensao): sidebar.html?eixo=..&trecho=..
+   9b) postMessage (demonstracao completa, iframe ao lado)
+   9c) Mensagem da extensao (ANOTACAO_RECEBIDA via runtime)
+   9d) Storage da extensao (anotacao pendente, item 6c acima)
+   ------------------------------------------------------------ */
+
+// 9a) PARAMETROS DA URL (abertura em nova aba)
 (() => {
   const parametros = new URLSearchParams(window.location.search);
   const eixo = parametros.get("eixo");
-  const nivel = parametros.get("nivel");
+  const trecho = parametros.get("trecho");
 
-  if (eixo && nivel) {
-    // Aplica apos a pagina terminar de carregar, garantindo que
-    // todos os elementos da tela 2 existam.
+  if (eixo && trecho) {
+    // Abre a caixa apos a pagina terminar de carregar.
     if (document.readyState === "loading") {
       document.addEventListener(
         "DOMContentLoaded",
-        () => aplicarSugestao(eixo, nivel),
+        () => receberAnotacao(eixo, trecho),
         { once: true }
       );
     } else {
-      aplicarSugestao(eixo, nivel);
+      receberAnotacao(eixo, trecho);
     }
   }
 })();
 
-/* ------------------------------------------------------------
-   9) SUGESTAO VIA POSTMESSAGE (demonstracao completa)
-   Na pagina demonstracao.html, este painel e um iframe ao
-   lado do documento ficticio. Nesse contexto nao existe a
-   extensao instalada (o chrome.runtime nao esta disponivel),
-   entao a comunicacao acontece pela API postMessage:
-
-   [documento] -> [pagina demonstracao.html] -> [este iframe]
-
-   A pagina mae envia { tipo: "TRIAGEM_SUGERIDA", eixo, nivel }
-   e aqui aplicamos a mesma logica das outras vias.
-   ------------------------------------------------------------ */
+// 9b) POSTMESSAGE (demonstracao completa: iframe ao lado)
+// A pagina mae (demonstracao.html) envia
+// { tipo: "ANOTACAO_RECEBIDA", eixo, texto }.
 window.addEventListener("message", (evento) => {
-  // Apenas mensagens com o formato esperado sao aceitas.
   const dados = evento && evento.data;
-  if (!dados || dados.tipo !== "TRIAGEM_SUGERIDA") return;
+  if (!dados || dados.tipo !== "ANOTACAO_RECEBIDA") return;
 
-  // Protecao: so aceitamos os 3 eixos conhecidos e niveis 1 a 5.
+  // Protecao: so aceitamos os 3 eixos conhecidos.
   if (!["geo", "social", "ambiental"].includes(dados.eixo)) return;
 
-  aplicarSugestao(dados.eixo, dados.nivel);
+  receberAnotacao(dados.eixo, dados.texto);
 });

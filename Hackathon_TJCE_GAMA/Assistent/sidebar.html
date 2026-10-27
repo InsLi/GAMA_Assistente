@@ -15,6 +15,7 @@
   <link rel="stylesheet" href="css/botoes.css" />      <!-- Botoes de todas as telas -->
   <link rel="stylesheet" href="css/tela-inicial.css" /><!-- Tela 1: menu inicial -->
   <link rel="stylesheet" href="css/triagem.css" />     <!-- Tela 2: triagem guiada -->
+  <link rel="stylesheet" href="css/anotacao.css" />    <!-- Caixa de anotação e histórico -->
   <link rel="stylesheet" href="css/resultado.css" />   <!-- Tela 3: matriz de risco -->
 </head>
 <body>
@@ -74,6 +75,48 @@
         </header>
 
         <div class="view-body tinted">
+          <!-- ====================================================
+               CAIXA DE ANOTACAO (aparece quando um trecho chega
+               do documento ficticio ou da extensao)
+               Conteúdo: recorte do texto, eixo ESCOLHIDO pelo
+               usuario e o SELETOR DE NIVEL de risco (1 a 5),
+               que fica aqui no painel, nunca no documento.
+               ==================================================== -->
+          <div class="anotacao" id="anotacaoBox" hidden>
+            <div class="anotacao-topo">
+              <span class="anotacao-eixo">
+                <i class="ponto" id="anotacaoPonto"></i>
+                <span id="anotacaoEixoNome">Eixo</span>
+              </span>
+              <button
+                type="button"
+                class="anotacao-fechar"
+                id="anotacaoFechar"
+                aria-label="Descartar anotação"
+              >
+                <svg viewBox="0 0 24 24" class="ico-sm"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>
+              </button>
+            </div>
+
+            <!-- Recorte do texto selecionado no documento -->
+            <p class="anotacao-trecho" id="anotacaoTrecho">Trecho selecionado</p>
+
+            <!-- SELETOR DE NIVEL: 1 a 5, com o nome de cada nivel -->
+            <p class="anotacao-rotulo">Nível de risco deste trecho:</p>
+            <div class="niveis" id="niveis" role="radiogroup" aria-label="Nível de risco">
+              <button type="button" class="nivel-btn" data-nivel="1">1 irrelevante</button>
+              <button type="button" class="nivel-btn" data-nivel="2">2 baixo</button>
+              <button type="button" class="nivel-btn" data-nivel="3">3 moderado</button>
+              <button type="button" class="nivel-btn" data-nivel="4">4 alto</button>
+              <button type="button" class="nivel-btn" data-nivel="5">5 crítico</button>
+            </div>
+
+            <button type="button" class="btn btn-green btn-salvar" id="btnSalvarAnotacao" disabled>
+              <svg viewBox="0 0 24 24" class="ico"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8"/><path d="M7 3v5h8"/></svg>
+              Salvar anotação
+            </button>
+          </div>
+
           <div class="section-head">
             <h2 class="section-title">Análise do Processo</h2>
             <p class="section-sub">
@@ -243,6 +286,46 @@
           <button type="button" class="btn btn-navy" id="btnCopy">
             <svg viewBox="0 0 24 24" class="ico" id="copyIcon"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg>
             <span id="copyLabel">Copiar Minuta de Decisão</span>
+          </button>
+        </footer>
+      </section>
+
+      <!-- ===================== VIEW 4 - HISTÓRICO DE ANOTAÇÕES ===================== -->
+      <!--
+        Lista as anotações salvas pelo usuario (trecho + eixo +
+        nivel), gravadas no localStorage do navegador. O botao
+        "Consultar Historico" da tela inicial abre esta tela.
+      -->
+      <section class="view" id="view-history" data-view="history">
+        <header class="gama-header gama-header--mini">
+          <button type="button" class="icon-btn" data-back="home" aria-label="Voltar">
+            <svg viewBox="0 0 24 24" class="ico"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+          </button>
+          <div class="mini-brand">
+            <strong>GAMA</strong>
+            <span>Guia de Análise do Meio Ambiente</span>
+          </div>
+          <span class="step-chip">Histórico</span>
+        </header>
+
+        <div class="view-body tinted">
+          <div class="section-head">
+            <h2 class="section-title">Anotações salvas</h2>
+            <p class="section-sub">
+              Trechos marcados no documento, com o eixo escolhido e o nível de
+              risco definido por você.
+            </p>
+          </div>
+
+          <!-- Lista preenchida pelo sidebar.js; se estiver vazia,
+               ele exibe o texto de "nenhuma anotacao" -->
+          <div id="historyList" class="history-list"></div>
+        </div>
+
+        <footer class="view-footer">
+          <button type="button" class="btn btn-outline" id="btnClearHistory">
+            <svg viewBox="0 0 24 24" class="ico"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+            Limpar histórico
           </button>
         </footer>
       </section>

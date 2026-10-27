@@ -12,12 +12,13 @@
    recebe a mensagem de um quadro e repassa para o outro.
 
    FLUXO COMPLETO:
-   1. Usuario seleciona um trecho do documento e clica na caixinha.
-   2. O documento envia { tipo: "GAMA_DEMO_SUGESTAO", eixo, nivel }.
+   1. Usuario seleciona um trecho do documento e escolhe o
+      eixo na caixinha (a escolha e do usuario).
+   2. O documento envia { tipo: "GAMA_DEMO_ANOTACAO", eixo, texto }.
    3. Aqui recebemos e reenviamos para o quadro do painel como
-      { tipo: "TRIAGEM_SUGERIDA", eixo, nivel }.
-   4. O painel (sidebar.js) aplica a sugestao: abre a triagem,
-      marca os checkboxes do nivel e destaca o card do eixo.
+      { tipo: "ANOTACAO_RECEBIDA", eixo, texto }.
+   4. O painel (sidebar.js) abre a caixa de anotacao, onde o
+      usuario escolhe o NIVEL de risco (1 a 5) e salva.
    ============================================================ */
 
 (() => {
@@ -43,19 +44,20 @@
     const dados = interesse(evento);
 
     // Interessa apenas o tipo de mensagem da demonstracao.
-    if (!dados || dados.tipo !== "GAMA_DEMO_SUGESTAO") return;
+    if (!dados || dados.tipo !== "GAMA_DEMO_ANOTACAO") return;
 
     // Confere se a mensagem veio do quadro do documento
     // (event.source e o objeto window que enviou a mensagem).
     if (evento.source !== quadroDocumento.contentWindow) return;
 
     // Repassa para o quadro do painel no formato que o
-    // sidebar.js entende (TRIAGEM_SUGERIDA).
+    // sidebar.js entende (ANOTACAO_RECEBIDA). O nivel NAO vai:
+    // ele sera escolhido pelo usuario dentro do painel.
     quadroPainel.contentWindow.postMessage(
       {
-        tipo: "TRIAGEM_SUGERIDA",
-        eixo: dados.eixo,     // "geo" | "social" | "ambiental"
-        nivel: dados.nivel,   // 1 a 5
+        tipo: "ANOTACAO_RECEBIDA",
+        eixo: dados.eixo,   // "geo" | "social" | "ambiental"
+        texto: dados.texto, // Trecho completo selecionado
       },
       "*" // Destino aberto: os quadros sao da propria pagina
     );
@@ -76,14 +78,12 @@
   }
 
   /* ------------------------------------------------------------
-     3) AVISO QUANDO O PAINEL AINDA NAO CARREGOU
-     Pequeno reforco visual: enquanto o iframe do painel nao
-     termina de carregar, mostramos um texto de espera nele.
-     Isso evita que o jurado veja um quadro branco por 1 ou 2
-     segundos na primeira abertura.
+     3) MARCA O PAINEL COMO PRONTO
+     Assim que o iframe do painel termina de carregar,
+     marcamos a pagina. Pode ser usado para ajustes visuais
+     (por exemplo, esconder um "carregando" inicial).
      ------------------------------------------------------------ */
   quadroPainel.addEventListener("load", () => {
-    // Iframe carregado: nada a fazer, o painel ja se mostra.
     document.documentElement.setAttribute("data-painel-pronto", "1");
   });
 })();

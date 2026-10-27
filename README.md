@@ -48,8 +48,9 @@ Critério adotado no MVP, de forma determinística e explicável: qualquer marca
 A interface é um painel lateral fixo à direita, no formato do painel lateral (side panel) do navegador, com largura máxima de 400 px.
 
 1. **Menu inicial** - apresentação da ferramenta com as ações "Iniciar Nova Triagem" e "Consultar Histórico".
-2. **Triagem guiada** - formulário estruturado em três blocos de análise, com legenda do semáforo e validação antes do processamento.
+2. **Triagem guiada** - formulário estruturado em três blocos de análise, com legenda do semáforo e validação antes do processamento. Quando um trecho chega do documento, uma caixa de anotação aparece no topo com o eixo escolhido e o seletor de nível de risco de 1 a 5.
 3. **Resultado da matriz** - diagnóstico em semáforo (vermelho, amarelo ou verde), fundamentação legal, ação sugerida e editor com minuta de decisão pré-preenchida, pronta para copiar.
+4. **Histórico de anotações** - lista das anotações salvas (trecho, eixo, nível e data), com remoção item a item e opção de limpar tudo.
 
 ## Eixos de análise
 
@@ -74,17 +75,18 @@ Também é possível abrir os arquivos diretamente no navegador:
 
 ## Documento fictício de demonstração
 
-O arquivo `documento-demo.html` simula um processo judicial (despacho de instrução) com um laudo pericial interdisciplinar contendo os três eixos de análise, cada um com os níveis de risco de 1 a 5 e um exemplo de texto para cada nível.
+O arquivo `documento-demo.html` simula um processo judicial (despacho de instrução) com um laudo pericial interdisciplinar contendo os três eixos de análise: geotécnico/vida, social e ambiental.
 
-Como o visualizador nativo de PDF do navegador não permite a injeção de interfaces, o documento foi criado em HTML com aparência de página impressa e todo o texto selecionável.
+Como o visualizador nativo de PDF do navegador não permite a injeção de interfaces, o documento foi criado em HTML com aparência de página impressa e todo o texto selecionável. O texto é **normal**, sem marcações pré-definidas: nem eixo nem nível aparecem nele.
 
 Funcionamento:
 
-1. Selecione com o mouse um trecho destacado do texto.
-2. Uma caixinha aparece mostrando o eixo daquele texto, o nível de 1 a 5 e um exemplo resumido do nível.
-3. Ao clicar na caixinha, o GAMA Assistente abre com o item da triagem correspondente ao eixo já marcado, conforme o nível: nível 1 nenhum item, níveis 2 e 3 um item, níveis 4 e 5 os dois itens do eixo.
-4. Na demonstração completa, a caixinha envia a mensagem para a página, que repassa para o painel ao lado, que marca o item em tempo real.
-5. Fora da demonstração completa, com a extensão instalada a caixinha marca o item direto no painel lateral; sem a extensão, ela abre a demonstração do painel em uma nova aba com o eixo e o nível na URL.
+1. Selecione com o mouse qualquer trecho do texto.
+2. Uma caixinha aparece com o recorte do trecho e pergunta "Qual o eixo deste trecho?": **quem define o eixo é o usuário**, pelos três botões (Geotécnico / Vida, Social, Ambiental).
+3. Ao escolher o eixo, o trecho vai para o painel do GAMA Assistente, onde fica o **seletor de nível de risco de 1 a 5** (1 irrelevante, 2 baixo, 3 moderado, 4 alto, 5 crítico).
+4. Ao salvar, a anotação (trecho, eixo e nível) é gravada no `localStorage` do navegador e os checkboxes do eixo são marcados conforme o nível: nível 1 nenhum item, níveis 2 e 3 um item, níveis 4 e 5 os dois itens do eixo.
+5. As anotações salvas ficam no botão **"Consultar Histórico"** da tela inicial, com opção de remover item a limpar tudo.
+6. Na demonstração completa, a caixinha envia a mensagem para a página, que repassa para o painel ao lado. Com a extensão instalada, a anotação vai direto para o painel lateral; sem ela, o clique abre a demonstração do painel em uma nova aba com o eixo e o trecho na URL.
 
 Link direto da demonstração do documento: **https://insli.github.io/GAMA_Assistente/documento-demo.html**
 
@@ -105,7 +107,7 @@ GAMA_Assistente/
 │       ├── manifest.json         Manifesto da extensão (Manifest V3)
 │       ├── background.js         Comportamento do painel lateral
 │       ├── content.js            Detecção do número de processo na página
-│       ├── sidebar.html          Interface com as três telas
+│       ├── sidebar.html          Interface com as quatro telas
 │       ├── sidebar.js            Navegação e regras de negócio
 │       ├── css/
 │       │   ├── base.css          Variáveis, reset e ícones
@@ -113,6 +115,7 @@ GAMA_Assistente/
 │       │   ├── botoes.css        Botões de todas as telas
 │       │   ├── tela-inicial.css  Tela 1: menu inicial
 │       │   ├── triagem.css       Tela 2: triagem guiada
+│       │   ├── anotacao.css      Caixa de anotação e histórico
 │       │   ├── resultado.css     Tela 3: matriz de risco
 │       │   └── conteudo.css      Botão discreto injetado nas páginas
 │       └── logo.png              Logotipo do projeto
@@ -124,6 +127,7 @@ GAMA_Assistente/
 ├── documento-demo.html           Documento fictício com os três eixos
 ├── documento-demo.css            Estilos do documento fictício
 ├── documento-demo.js             Caixinha de seleção e ponte com a extensão
+├── fotos-slides/                 Capturas da demonstração para apresentação
 ├── logo.png                      Logotipo do projeto
 ├── Modelo_Pitch.md            Apresentação do projeto
 ├── Modelo_Pitch.pdf           Apresentação do projeto (PDF)
@@ -141,6 +145,7 @@ GAMA_Assistente/
 - Identidade visual institucional: azul marinho `#002E63`, verde natureza `#1E824C` e cabeçalho em tom de menta.
 - Layout responsivo dentro dos limites de largura de um painel lateral de extensão.
 - Minuta de decisão copiável para a área de transferência.
+- Anotação de trechos com eixo escolhido pelo usuário e nível de risco de 1 a 5, gravada no `localStorage` e listada na tela de histórico.
 - Dados armazenados localmente no dispositivo.
 
 ## Fundamentação
