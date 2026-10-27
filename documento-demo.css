@@ -1,0 +1,452 @@
+/* ============================================================
+   ARQUIVO: documento-demo.css
+   O que este arquivo cuida:
+   - Visual do documento ficticio (simula uma folha de PDF)
+   - Barra de instrucao no topo da pagina
+   - Legenda dos eixos e dos niveis de risco
+   - Marcas de fundo dos trechos por eixo (geo, social, ambiental)
+   - Caixinha (popup) que aparece ao selecionar o texto
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   1) RESET MINIMO E FONTE
+   Mesma filosofia do painel: caixa de borda dentro do pai,
+   fonte corporativa e fundo neutro atras das folhas.
+   ------------------------------------------------------------ */
+* { box-sizing: border-box; }
+
+html, body { margin: 0; }
+
+body {
+  font-family: "Inter", "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    system-ui, "Helvetica Neue", Arial, sans-serif;
+  background: #dfe3e8;       /* Mesmo cinza do fundo do painel */
+  color: #16202e;
+  font-size: 15px;
+  line-height: 1.6;
+  padding-bottom: 60px;
+}
+
+/* ------------------------------------------------------------
+   2) BARRA DE INSTRUCAO
+   Faixa fixa no topo explicando como usar a demonstracao.
+   ------------------------------------------------------------ */
+.barra-demo {
+  position: sticky;          /* Gruda no topo ao rolar a pagina */
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 12px 22px;
+  background: linear-gradient(125deg, #e7f7e6 0%, #d6f1d1 100%);
+  border-bottom: 1px solid rgba(0, 46, 99, 0.09);
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.07);
+}
+
+.barra-demo-texto {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.barra-demo-texto strong {
+  color: #002e63;
+  font-size: 13.5px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+.barra-demo-texto span {
+  color: #3f5570;
+  font-size: 12px;
+}
+
+/* Botao que abre a demonstracao do painel em outra aba */
+.barra-demo-botao {
+  flex: none;
+  padding: 9px 16px;
+  border-radius: 8px;
+  background: #1e824c;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+  box-shadow: 0 5px 14px rgba(30, 130, 76, 0.28);
+  transition: background 0.15s ease;
+}
+.barra-demo-botao:hover { background: #196f41; }
+
+/* ------------------------------------------------------------
+   3) LEGENDA DOS EIXOS E DOS NIVEIS
+   Duas linhas de informacao: quais cores representam cada eixo
+   e o que significa cada nivel de 1 a 5.
+   ------------------------------------------------------------ */
+.legenda {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 32px;
+  max-width: 940px;
+  margin: 22px auto 0;
+  padding: 12px 18px;
+  background: #ffffff;
+  border: 1px solid #e6ebf2;
+  border-radius: 8px;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.07);
+}
+
+.legenda-grupo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+}
+
+.legenda-titulo {
+  color: #64748b;
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.legenda-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #475569;
+  font-size: 11.5px;
+  font-weight: 700;
+}
+
+/* Bolinha colorida que identifica o eixo */
+.ponto {
+  width: 10px;
+  height: 10px;
+  flex: none;
+  display: inline-block;
+  border-radius: 50%;
+  border: 1px solid rgba(15, 23, 42, 0.18);
+}
+.ponto--geo { background: #dc2626; }        /* Vermelho: vida */
+.ponto--social { background: #002e63; }     /* Azul marinho: social */
+.ponto--ambiental { background: #1e824c; }  /* Verde: ambiental */
+
+/* Bolinha do nivel: o numero aparece dentro via ::before */
+.nivel {
+  width: 18px;
+  height: 18px;
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 800;
+  font-style: normal;
+}
+.nivel::before { content: attr(data-nivel); }
+
+/* Escala de cinza do claro ao critico (1 a 5) */
+.nivel--1 { background: #94a3b8; }
+.nivel--2 { background: #64a56b; }
+.nivel--3 { background: #f3b81d; }
+.nivel--4 { background: #ea8c1c; }
+.nivel--5 { background: #dc2626; }
+
+/* ------------------------------------------------------------
+   4) FOLHAS DO DOCUMENTO (simula paginas de PDF)
+   Fundo branco, sombra suave e margem interna generosa, como
+   uma pagina impressa. A fonte vira serifa para lembrar um
+   documento oficial datilografado.
+   ------------------------------------------------------------ */
+.folhas {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 26px;
+  padding: 26px 16px;
+}
+
+.folha {
+  width: 100%;
+  max-width: 880px;         /* Largura maxima de uma folha A4 na tela */
+  padding: 54px 68px 40px;
+  background: #ffffff;
+  border-radius: 4px;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.14);
+  font-family: "Times New Roman", "Liberation Serif", Georgia, serif;
+  font-size: 16px;
+  line-height: 1.75;
+  position: relative;       /* Para posicionar o rodape de pagina */
+}
+
+/* Cabecalho judiciario do documento */
+.folha-cabecalho { text-align: center; }
+
+.judiciario {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+.judiciario span { font-weight: 400; font-size: 12.5px; }
+
+.processo {
+  margin: 14px 0 2px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.partes {
+  margin: 0;
+  font-size: 12.5px;
+}
+
+.folha-cabecalho hr {
+  border: 0;
+  border-top: 1.5px solid #16202e;
+  margin: 16px 0 0;
+}
+
+/* Titulos das pecas e das secoes */
+.titulo-peca {
+  margin: 26px 0 20px;
+  font-size: 16px;
+  font-weight: 700;
+  text-align: center;
+  letter-spacing: 0.08em;
+}
+
+.titulo-secao {
+  margin: 26px 0 12px;
+  font-size: 14.5px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+.paragrafo {
+  margin: 0 0 14px;
+  text-align: justify;      /* Texto justificado, como em peticao */
+  hyphens: auto;
+}
+
+.assinatura {
+  margin: 34px 0 0;
+  text-align: right;
+  font-size: 14.5px;
+}
+
+/* Numero da folha no rodape */
+.rodape-folha {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 16px;
+  margin: 0;
+  text-align: center;
+  color: #94a3b8;
+  font-size: 11.5px;
+}
+
+/* ------------------------------------------------------------
+   5) TRECHOS MARCADOS (selecionaveis)
+   Cada trecho tem data-eixo (geo, social ou ambiental) e
+   data-nivel (1 a 5). A cor de fundo lembra um texto grifado
+   e muda conforme o eixo. O ponto colorido no inicio ajuda
+   a identificar o eixo antes mesmo de selecionar.
+   ------------------------------------------------------------ */
+.trecho {
+  cursor: text;
+  border-bottom: 2px dotted rgba(0, 0, 0, 0.18);
+  transition: filter 0.15s ease;
+}
+.trecho:hover { filter: brightness(0.97); }
+
+.trecho--geo {
+  background: rgba(220, 38, 38, 0.10);
+  border-bottom-color: rgba(220, 38, 38, 0.45);
+}
+.trecho--social {
+  background: rgba(0, 46, 99, 0.09);
+  border-bottom-color: rgba(0, 46, 99, 0.4);
+}
+.trecho--ambiental {
+  background: rgba(30, 130, 76, 0.11);
+  border-bottom-color: rgba(30, 130, 76, 0.45);
+}
+
+/* Destaque aplicado pela caixinha: pisca o trecho escolhido */
+.trecho--ativo {
+  outline: 2px solid #002e63;
+  outline-offset: 2px;
+}
+
+/* ------------------------------------------------------------
+   6) QUADRO-REFERENCIA (tabela de niveis)
+   Tabela simples com linhas zebradas. Nao recebe marcacao
+   de selecao (nao tem data-eixo), entao a caixinha nao abre.
+   ------------------------------------------------------------ */
+.quadro {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 8px 0 18px;
+  font-size: 13.5px;
+}
+
+.quadro th,
+.quadro td {
+  padding: 8px 10px;
+  border: 1px solid #c9d2dd;
+  text-align: left;
+  vertical-align: top;
+}
+
+.quadro thead th {
+  background: #002e63;
+  color: #ffffff;
+  font-family: "Inter", "Roboto", Arial, sans-serif;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+}
+
+.quadro tbody tr:nth-child(even) td { background: #f4f7fa; }
+
+/* Coluna do nivel com a bolinha colorida */
+.quadro-nivel {
+  width: 54px;
+  text-align: center !important;
+  font-weight: 800;
+  color: #002e63;
+}
+
+/* ------------------------------------------------------------
+   7) CAIXINHA DE SELECAO (popup)
+   Aparece ancorada a posicao da selecao do usuario. Fica com
+   z-index alto para nunca ficar atras do documento.
+   ------------------------------------------------------------ */
+.gama-popup {
+  position: absolute;        /* Posicionada em relacao ao documento */
+  z-index: 50;
+  width: 268px;
+  padding: 11px 13px;
+  background: #ffffff;
+  border: 1px solid rgba(0, 46, 99, 0.16);
+  border-radius: 8px;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.24);
+  font-family: "Inter", "Roboto", Arial, sans-serif;
+  cursor: pointer;
+  /* Animacao de entrada discreta */
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.16s ease, transform 0.16s ease;
+}
+
+.gama-popup[hidden] { display: none; }
+
+.gama-popup.is-visivel {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Linha superior: eixo (com bolinha) e nivel */
+.gama-popup-topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.gama-popup-eixo {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: #002e63;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+/* Etiqueta do nivel com a cor da escala 1 a 5 */
+.gama-popup-nivel {
+  padding: 2px 9px;
+  border-radius: 999px;
+  background: #f4f7fa;
+  border: 1px solid #e6ebf2;
+  color: #334155;
+  font-size: 11px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+/* Texto de exemplo do nivel, logo abaixo do eixo */
+.gama-popup-exemplo {
+  margin: 7px 0 9px;
+  color: #64748b;
+  font-size: 11.5px;
+  line-height: 1.45;
+}
+
+/* Rodape da caixinha: chamada para acao */
+.gama-popup-acao {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding-top: 8px;
+  border-top: 1px solid #eef2f7;
+  color: #1e824c;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.gama-popup-acao .ico {
+  width: 15px;
+  height: 15px;
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* ------------------------------------------------------------
+   8) AVISO PARA QUEM ABRIU A DEMO SEM A EXTENSAO
+   Aparece uma unica vez, no canto inferior esquerdo, avisando
+   que a extensao GAMA nao esta instalada neste navegador.
+   ------------------------------------------------------------ */
+.gama-aviso {
+  position: fixed;
+  left: 18px;
+  bottom: 18px;
+  z-index: 40;
+  max-width: 320px;
+  padding: 11px 14px;
+  background: #002e63;
+  color: #ffffff;
+  border-radius: 8px;
+  font-size: 12px;
+  line-height: 1.5;
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.28);
+}
+
+.gama-aviso strong { color: #d6f1d1; }
+
+/* ------------------------------------------------------------
+   9) RESPONSIVO
+   Em telas estreitas a folha perde as margens laterais e a
+   barra de instrucao vira coluna unica.
+   ------------------------------------------------------------ */
+@media (max-width: 720px) {
+  .barra-demo {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .folha { padding: 34px 22px 36px; font-size: 15px; }
+  .gama-popup { width: 236px; }
+}

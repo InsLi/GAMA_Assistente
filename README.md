@@ -67,6 +67,21 @@ Acesse a demonstração pelo navegador, sem instalação:
 
 Também é possível abrir o arquivo `Hackathon_TJCE_GAMA/Assistent/sidebar.html` diretamente no navegador para testar as três telas.
 
+## Documento fictício de demonstração
+
+O arquivo `documento-demo.html` simula um processo judicial (despacho de instrução) com um laudo pericial interdisciplinar contendo os três eixos de análise, cada um com os níveis de risco de 1 a 5 e um exemplo de texto para cada nível.
+
+Como o visualizador nativo de PDF do navegador não permite a injeção de interfaces, o documento foi criado em HTML com aparência de página impressa e todo o texto selecionável.
+
+Funcionamento:
+
+1. Selecione com o mouse um trecho destacado do texto.
+2. Uma caixinha aparece mostrando o eixo daquele texto, o nível de 1 a 5 e um exemplo resumido do nível.
+3. Ao clicar na caixinha, o GAMA Assistente abre com o item da triagem correspondente ao eixo já marcado, conforme o nível: nível 1 nenhum item, níveis 2 e 3 um item, níveis 4 e 5 os dois itens do eixo.
+4. Com a extensão instalada, a caixinha marca o item direto no painel lateral. Sem a extensão, ela abre a demonstração do painel em uma nova aba com o eixo e o nível na URL.
+
+Link direto da demonstração do documento: **https://insli.github.io/GAMA_Assistente/documento-demo.html**
+
 ## Como instalar a extensão no Google Chrome
 
 1. Baixe ou clone este repositório.
@@ -97,6 +112,9 @@ GAMA_Assistente/
 │       └── logo.png              Logotipo do projeto
 ├── index.html                    Página de entrada da demonstração
 ├── index.css                     Estilos da página de entrada
+├── documento-demo.html           Documento fictício com os três eixos
+├── documento-demo.css            Estilos do documento fictício
+├── documento-demo.js             Caixinha de seleção e ponte com a extensão
 ├── logo.png                      Logotipo do projeto
 ├── Modelo_Pitch.md            Apresentação do projeto
 ├── Modelo_Pitch.pdf           Apresentação do projeto (PDF)

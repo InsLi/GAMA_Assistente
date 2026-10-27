@@ -459,6 +459,158 @@ if (TEM_EXTENSAO) {
       if (mensagem && mensagem.tipo === "PROCESSO_ENCONTRADO") {
         atualizarNumeroProcesso(mensagem.numero);
       }
+
+      // 6b-i) O documento ficticio sugere um item da triagem.
+      if (mensagem && mensagem.tipo === "TRIAGEM_SUGERIDA") {
+        aplicarSugestao(mensagem.eixo, mensagem.nivel);
+      }
+    });
+  }
+
+  // 6c) Le uma sugestao guardada pelo background ao abrir o painel.
+  if (chrome.storage && chrome.storage.local) {
+    chrome.storage.local.get("sugestao").then((dados) => {
+      if (dados && dados.sugestao && dados.sugestao.eixo) {
+        aplicarSugestao(dados.sugestao.eixo, dados.sugestao.nivel);
+        // Limpa a sugestao para ela nao reaparecer em aberturas
+        // futuras sem novo clique no documento.
+        chrome.storage.local.remove("sugestao");
+      }
     });
   }
 }
+
+/* ------------------------------------------------------------
+   7) SUGESTAO DE TRIAGEM VINDA DO DOCUMENTO FICTICIO
+   Quando o usuario seleciona um trecho no documento de
+   demonstracao e clica na caixinha, o painel recebe o eixo e o
+   nivel (1 a 5). Aqui aplicamos essa sugestao:
+   - Troca para a TELA 2 (triagem guiada)
+   - Marca automaticamente os checkboxes do eixo indicado,
+     conforme o nivel (regra na tabela MAPEAMENTO_NIVEL)
+   - Destaca o card do eixo e mostra um aviso (toast)
+
+   REGRA DO MAPEAMENTO (nivel -> itens marcados):
+   - Nivel 1: nenhum item marcado (risco irrelevante nao gera
+     marcacao, mas o card e aberto para conferencia do juiz)
+   - Nivel 2 ou 3: apenas o segundo item do eixo (risco leve
+     ou moderado)
+   - Nivel 4 ou 5: os dois itens do eixo (risco alto ou critico)
+   ------------------------------------------------------------ */
+
+// Tabela fixa: cada nivel indica quais caixas do eixo marcar.
+// Os numeros sao as POSICOES das caixas dentro do card do eixo
+// (comecando em 0). Nivel 1 = lista vazia = nada marcado.
+const MAPEAMENTO_NIVEL = {
+  1: [],      // Nenhum item
+  2: [1],     // Apenas o segundo item do eixo
+  3: [1],     // Apenas o segundo item do eixo
+  4: [0, 1],  // Os dois itens do eixo
+  5: [0, 1],  // Os dois itens do eixo
+};
+
+// Rotulos legiveis de cada eixo, usados no aviso (toast).
+const ROTULOS_EIXO = {
+  geo: "Geotécnico / Vida",
+  social: "Social",
+  ambiental: "Ambiental",
+};
+
+/**
+ * Aplica uma sugestao de triagem na TELA 2.
+ * @param {string} eixo "geo" | "social" | "ambiental"
+ * @param {number|string} nivel de 1 a 5
+ */
+function aplicarSugestao(eixo, nivel) {
+  // Protecao: so aceitamos os 3 eixos conhecidos.
+  if (!MAPEAMENTO_NIVEL || !["geo", "social", "ambiental"].includes(eixo)) {
+    return;
+  }
+
+  // Converte para numero e valida a faixa (1 a 5).
+  const nivelNum = Math.min(5, Math.max(1, Number(nivel) || 1));
+  const posicoes = MAPEAMENTO_NIVEL[nivelNum];
+
+  // Busca todas as caixas do eixo, na ordem em que aparecem no HTML.
+  const caixasDoEixo = [
+    ...document.querySelectorAll(`#view-screening input[data-axis="${eixo}"]`),
+  ];
+
+  // Primeiro desmarca tudo do eixo (evita marcas de uma sugestao anterior).
+  caixasDoEixo.forEach((caixa) => {
+    caixa.checked = false;
+  });
+
+  // Depois marca as posicoes indicadas pelo nivel.
+  posicoes.forEach((posicao) => {
+    if (caixasDoEixo[posicao]) caixasDoEixo[posicao].checked = true;
+  });
+
+  // Revalida o botao "Processar Matriz de Risco" da tela 2.
+  updateProcessButton();
+
+  // Destaca o card do eixo para o usuario ver onde olhar.
+  destacaCardDoEixo(eixo);
+
+  // Abre a TELA 2 (triagem guiada) com a sugestao aplicada.
+  showView("screening");
+
+  // Avisa o usuario do que foi preenchido automaticamente.
+  toast(
+    nivelNum === 1
+      ? `Sugestão: ${ROTULOS_EIXO[eixo]} com nível 1 (irrelevante). Confira e processe.`
+      : `Sugestão aplicada: ${ROTULOS_EIXO[eixo]} nível ${nivelNum}.`
+  );
+}
+
+/**
+ * Aplica a classe de destaque no card do eixo por 2,6 segundos.
+ * O CSS do destaque esta em css/triagem.css (.card--destaque).
+ * @param {string} eixo "geo" | "social" | "ambiental"
+ */
+function destacaCardDoEixo(eixo) {
+  // A caixa marcada vive dentro do card do eixo. Subindo na
+  // arvore com .closest achamos o card correspondente.
+  const caixa = document.querySelector(
+    `#view-screening input[data-axis="${eixo}"]`
+  );
+  if (!caixa) return;
+
+  const card = caixa.closest(".card");
+  if (!card) return;
+
+  card.classList.add("card--destaque");
+
+  // Remove o destaque depois de um tempo para nao incomodar.
+  setTimeout(() => card.classList.remove("card--destaque"), 2600);
+
+  // Leva o card para a area visivel (a tela 2 pode ter rolagem).
+  card.scrollIntoView({ behavior: "smooth", block: "center" });
+}
+
+/* ------------------------------------------------------------
+   8) SUGESTAO VIA URL (demonstracao sem extensao instalada)
+   Quando a extensao nao esta instalada, a caixinha do documento
+   abre este painel em outra aba com os parametros na URL, por
+   exemplo: sidebar.html?eixo=geo&nivel=5
+   Aqui lemos esses parametros e aplicamos a mesma sugestao.
+   ------------------------------------------------------------ */
+(() => {
+  const parametros = new URLSearchParams(window.location.search);
+  const eixo = parametros.get("eixo");
+  const nivel = parametros.get("nivel");
+
+  if (eixo && nivel) {
+    // Aplica apos a pagina terminar de carregar, garantindo que
+    // todos os elementos da tela 2 existam.
+    if (document.readyState === "loading") {
+      document.addEventListener(
+        "DOMContentLoaded",
+        () => aplicarSugestao(eixo, nivel),
+        { once: true }
+      );
+    } else {
+      aplicarSugestao(eixo, nivel);
+    }
+  }
+})();

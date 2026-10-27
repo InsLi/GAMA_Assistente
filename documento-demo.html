@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-gama-demo="1">
+<head>
+  <!-- ============================================================
+       DOCUMENTO FICTICIO DE DEMONSTRACAO - GAMA ASISTENTE
+
+       Este arquivo simula um processo judicial em PDF para fins
+       de demonstracao. Ele e uma pagina HTML com aparencia de
+       documento impresso (folhas brancas, fonte serifa, cabecalho
+       judiciario) por um motivo tecnico importante:
+
+       O visualizador nativo de PDF do navegador NAO permite que
+       scripts injetem interfaces (como a caixinha de selecao).
+       Como a caixinha e a parte central da demonstracao, o
+       documento foi criado em HTML, com todo o texto selecionavel.
+
+       COMO FUNCIONA A DEMONSTRACAO:
+       1. O usuario seleciona (arrasta o mouse) um trecho do
+          texto que esteja marcado com cor de fundo.
+       2. Aparece uma caixinha pequena perto da selecao mostrando
+          o EIXO daquele texto e o NIVEL (1 a 5) de risco.
+       3. Ao clicar na caixinha, abre o GAMA Assistente e o item
+          correspondente da triagem e marcado automaticamente.
+
+       Os estilos estao em documento-demo.css e a logica em
+       documento-demo.js (nenhum codigo embutido aqui).
+       ============================================================ -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="documento-demo.css" />
+  <title>Processo Fictício - Demonstração GAMA</title>
+</head>
+<body>
+
+  <!-- ============================================================
+       BARRA DE INSTRUCAO (fica fora da "folha" do documento)
+       ============================================================ -->
+  <header class="barra-demo">
+    <div class="barra-demo-texto">
+      <strong>Documento fictício de demonstração</strong>
+      <span>
+        Selecione um trecho destacado do texto para ver o eixo e o nível de
+        risco, depois clique na caixinha para abrir o GAMA Assistente.
+      </span>
+    </div>
+    <a class="barra-demo-botao" href="Hackathon_TJCE_GAMA/Assistent/sidebar.html">
+      Abrir GAMA Assistente
+    </a>
+  </header>
+
+  <!-- ============================================================
+       LEGENDA DOS EIXOS E DA ESCALA DE NIVEIS
+       ============================================================ -->
+  <section class="legenda" aria-label="Legenda do documento">
+    <div class="legenda-grupo">
+      <span class="legenda-titulo">Eixos marcados no texto</span>
+      <span class="legenda-item">
+        <i class="ponto ponto--geo"></i> Geotécnico / Vida (N1 a N5)
+      </span>
+      <span class="legenda-item">
+        <i class="ponto ponto--social"></i> Social (N1 a N5)
+      </span>
+      <span class="legenda-item">
+        <i class="ponto ponto--ambiental"></i> Ambiental (N1 a N5)
+      </span>
+    </div>
+    <div class="legenda-grupo">
+      <span class="legenda-titulo">Nível de risco</span>
+      <span class="legenda-item"><i class="nivel nivel--1"></i> 1 irrelevante</span>
+      <span class="legenda-item"><i class="nivel nivel--2"></i> 2 baixo</span>
+      <span class="legenda-item"><i class="nivel nivel--3"></i> 3 moderado</span>
+      <span class="legenda-item"><i class="nivel nivel--4"></i> 4 alto</span>
+      <span class="legenda-item"><i class="nivel nivel--5"></i> 5 crítico</span>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       FOLHAS DO DOCUMENTO (simulacao das paginas do PDF)
+       ============================================================ -->
+  <main class="folhas">
+
+    <!-- ---------- FOLHA 1 ---------- -->
+    <article class="folha">
+      <header class="folha-cabecalho">
+        <p class="judiciario">
+          PODER JUDICIÁRIO<br />
+          TRIBUNAL DE JUSTIÇA DO ESTADO DO CEARÁ<br />
+          <span>2ª VARA DA FAZENDA PÚBLICA - COMARCA DE FORTALEZA</span>
+        </p>
+        <p class="processo">PROCESSO Nº 0801234-56.2026.8.06.0001</p>
+        <p class="partes">AUTOR: MINISTÉRIO PÚBLICO DO ESTADO DO CEARÁ</p>
+        <p class="partes">RÉU: CONSTRUTORA VALE VERDE LTDA.</p>
+        <hr />
+      </header>
+
+      <h1 class="titulo-peca">DESPACHO DE INSTRUÇÃO</h1>
+
+      <p class="paragrafo">
+        Autos em mesa. Trata-se de Ação Civil Pública ajuizada pelo Ministério
+        Público do Estado do Ceará em face de CONSTRUTORA VALE VERDE LTDA., com
+        fundamento no art. 225 da Constituição Federal e na Lei nº 7.347/1985,
+        objetivando a cessação de atividade lesiva e a recomposição de área
+        degradada no perímetro urbano do bairro Parque Angico, nesta capital.
+      </p>
+
+      <p class="paragrafo">
+        A instrução probatória foi concluída com a juntada do laudo pericial
+        interdisciplinar (fls. 412/489), composto por três eixos de análise:
+        geotécnico/vida, social e ambiental. Segue o relatório sintético, com a
+        indicação dos níveis de risco de 1 a 5 adotados pelo GAMA Assistente.
+      </p>
+
+      <h2 class="titulo-secao">I - ANÁLISE GEOTÉCNICA E DE VIDA</h2>
+
+      <p class="paragrafo">
+        <span class="trecho trecho--geo" data-eixo="geo" data-nivel="1">
+          O terreno objeto da perícia apresenta relevo plano, solos compactos e
+          ausência de erosão ativa ou fissuras aparentes nas edificações do
+          quarteirão norte,
+        </span>
+        tendo a equipe de campo registrado apenas desgaste cosmético de
+        fachadas.
+      </p>
+
+      <p class="paragrafo">
+        No acesso leste, <span class="trecho trecho--geo" data-eixo="geo" data-nivel="2">
+        identificou-se erosão superficial em talude de arranque de via, com
+        profundidade inferior a 20 centímetros e sem comprometimento
+        estrutural,</span> sujeita a correção por contenção simples.
+      </p>
+
+      <p class="paragrafo">
+        <span class="trecho trecho--geo" data-eixo="geo" data-nivel="3">
+        A encosta central apresenta declividade entre 30 e 45 graus, com trinca
+        de ancoragem parcial e escorrimento laminar durante as chuvas
+        fortes,</span> conforme fotogrametria de fls. 388.
+      </p>
+
+      <p class="paragrafo">
+        <span class="trecho trecho--geo" data-eixo="geo" data-nivel="4">
+        Foram identificadas fissuras verticais de até 3 centímetros em alvenaria
+        de duas edificações, com desalinhamento de lintéis e possibilidade de
+        desabamento parcial,</span> exigindo interdição imediata dos imóveis
+        números 112 e 118.
+      </p>
+
+      <p class="paragrafo">
+        <span class="trecho trecho--geo" data-eixo="geo" data-nivel="5">
+        Habitações implantadas em falésia íngreme sem qualquer sistema de
+        contenção, com fissuração progressiva no maciço e risco iminente de
+        deslizamento no período chuvoso, expondo 42 famílias à perda de vida,</span>
+        conforme alerta conjunto da Defesa Civil municipal.
+      </p>
+
+      <h2 class="titulo-secao">II - ANÁLISE SOCIAL</h2>
+
+      <p class="paragrafo">
+        <span class="trecho trecho--social" data-eixo="social" data-nivel="1">
+        A ocupação é recente, com menos de seis meses, sem famílias em situação
+        de vulnerabilidade declarada e sem litígio entre os vizinhos,</span>
+        segundo o levantamento social de fls. 350.
+      </p>
+
+      <p class="paragrafo">
+        <span class="trecho trecho--social" data-eixo="social" data-nivel="2">
+        Cerca de metade dos moradores declara renda per capita inferior a meio
+        salário mínimo, com cadastro ativo no CadÚnico</span> e dependência de
+        programas de transferência de renda.
+      </p>
+
+      <p class="paragrafo">
+        <span class="trecho trecho--social" data-eixo="social" data-nivel="3">
+        Há presença de idosos e de crianças pequenas, com tempo de ocupação
+        superior a cinco anos e escola municipal no perímetro,</span> o que
+        caracteriza arraigamento comunitário relevante.
+      </p>
+
+      <p class="paragrafo">
+        <span class="trecho trecho--social" data-eixo="social" data-nivel="4">
+        O grupo inclui pessoas com deficiência e famílias monoparentais
+        chefiadas por mulheres, sem alternativa de moradia, e vive litígio
+        judicial entre condôminos de fato pela posse dos lotes,</span> com
+        audiências marcadas neste juízo.
+      </p>
+
+      <p class="paragrafo">
+        <span class="trecho trecho--social" data-eixo="social" data-nivel="5">
+        Familias em situação de rua recém-realocadas para o local, sem
+        documentação civil, com histórico de violência doméstica e conflito
+        pela posse do terreno entre grupos organizados,</span> demandando
+        proteção imediata de mulheres e crianças.
+      </p>
+
+      <p class="rodape-folha">Página 1 de 2</p>
+    </article>
+
+    <!-- ---------- FOLHA 2 ---------- -->
+    <article class="folha">
+      <h2 class="titulo-secao">III - ANÁLISE AMBIENTAL</h2>
+
+      <p class="paragrafo">
+        <span class="trecho trecho--ambiental" data-eixo="ambiental" data-nivel="1">
+        A área está fora de Área de Preservação Permanente, com vegetação de
+        jardim e espécies exóticas, sem recurso hídrico no interior dos
+        lotes,</span> conforme carta técnica de fls. 300.
+      </p>
+
+      <p class="paragrafo">
+        <span class="trecho trecho--ambiental" data-eixo="ambiental" data-nivel="2">
+        Observam-se canteiros com espécies exóticas e descarte eventual de
+        resíduos da construção civil, sem supressão de vegetação nativa
+        identificada,</span> sujeitos a ordem de serviço de saneamento básico.
+      </p>
+
+      <p class="paragrafo">
+        <span class="trecho trecho--ambiental" data-eixo="ambiental" data-nivel="3">
+        Há fragmento de mata secundária com fauna de médio porte e APP de curso
+        d'água com regeneração natural em cerca de 30% da extensão,</span>
+        conforme inventário biológico de fls. 333.
+      </p>
+
+      <p class="paragrafo">
+        <span class="trecho trecho--ambiental" data-eixo="ambiental" data-nivel="4">
+        A APP de margem apresenta supressão de aproximadamente 60% da
+        vegetação nativa e nascente exposta, com potencial de regeneração em
+        até dois anos,</span> exigindo recomposição imediata das faixas de
+        proteção.
+      </p>
+
+      <p class="paragrafo">
+        <span class="trecho trecho--ambiental" data-eixo="ambiental" data-nivel="5">
+        Supressão total da vegetação nativa em APP de nascente, com
+        comprometimento da recarga hídrica, morte de fauna local e lançamento
+        de efluentes no curso d'água,</span> configurando dano ambiental de
+        difícil e onerosa recuperação.
+      </p>
+
+      <!-- ======================================================
+           QUADRO-REFERENCIA: níveis 1 a 5 com exemplo por eixo
+           (tabela de consulta, sem marcação de selecao)
+           ====================================================== -->
+      <h2 class="titulo-secao">QUADRO-REFERÊNCIA DE NÍVEIS</h2>
+
+      <table class="quadro">
+        <thead>
+          <tr>
+            <th scope="col">Nível</th>
+            <th scope="col">Geotécnico / Vida</th>
+            <th scope="col">Social</th>
+            <th scope="col">Ambiental</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="quadro-nivel">1</td>
+            <td>Terreno plano, sem erosão</td>
+            <td>Ocupação recente, sem vulnerabilidade</td>
+            <td>Fora de APP, sem vegetação nativa</td>
+          </tr>
+          <tr>
+            <td class="quadro-nivel">2</td>
+            <td>Erosão superficial leve</td>
+            <td>Renda baixa, cadastro no CadÚnico</td>
+            <td>Canteiros exóticos e descarte eventual</td>
+          </tr>
+          <tr>
+            <td class="quadro-nivel">3</td>
+            <td>Declividade de 30 a 45 graus, trincas</td>
+            <td>Idosos e crianças, ocupação acima de 5 anos</td>
+            <td>Mata secundária, APP parcialmente regenerada</td>
+          </tr>
+          <tr>
+            <td class="quadro-nivel">4</td>
+            <td>Fissuras em alvenaria, desabamento parcial</td>
+            <td>Deficiência, monoparentais, litígio pela posse</td>
+            <td>APP com 60% suprimida, nascente exposta</td>
+          </tr>
+          <tr>
+            <td class="quadro-nivel">5</td>
+            <td>Falésia sem contenção, risco iminente de vida</td>
+            <td>Situação de rua, conflito organizado pela posse</td>
+            <td>Supressão total em APP de nascente</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p class="paragrafo">
+        Diante do exposto, encaminhem-se os autos ao GAMA Assistente para
+        consolidação da matriz de risco e elaboração da minuta de decisão.
+      </p>
+
+      <p class="assinatura">
+        Fortaleza, 27 de outubro de 2026.<br />
+        <strong>Juiz(a) de Direito da 2ª Vara da Fazenda Pública</strong>
+      </p>
+
+      <p class="rodape-folha">Página 2 de 2</p>
+    </article>
+  </main>
+
+  <!-- ============================================================
+       CAIXINHA DE SELECAO (popup)
+       Fica escondida (hidden) e so aparece quando o usuario
+       seleciona um trecho marcado com data-eixo.
+       ============================================================ -->
+  <div class="gama-popup" id="gamaPopup" hidden role="dialog" aria-label="Sugestão do GAMA Assistente">
+    <div class="gama-popup-topo">
+      <span class="gama-popup-eixo">
+        <i class="ponto" id="popupPonto"></i>
+        <span id="popupEixo">Eixo</span>
+      </span>
+      <span class="gama-popup-nivel" id="popupNivel">Nível 1</span>
+    </div>
+    <p class="gama-popup-exemplo" id="popupExemplo">Exemplo</p>
+    <div class="gama-popup-acao">
+      <span id="popupAcao">Abrir no GAMA Assistente</span>
+      <svg viewBox="0 0 24 24" class="ico"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg>
+    </div>
+  </div>
+
+  <!-- Logica da selecao e da caixinha -->
+  <script src="documento-demo.js"></script>
+</body>
+</html>

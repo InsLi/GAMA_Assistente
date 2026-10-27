@@ -59,7 +59,24 @@ chrome.runtime.onMessage.addListener((mensagem, remetente, responder) => {
   }
 
   /* --------------------------------------------------------
-     2b) USUARIO CLICOU NO BOTAO DISCRETO DA PAGINA
+     2b) PAGINA FICTICIA SUGERE UM ITEM DA TRIAGEM
+     O content script repassa eixo e nivel lidos na caixinha do
+     documento de demonstracao. Guardamos a sugestao no
+     armazenamento para o painel lateral aplicar quando abrir.
+     -------------------------------------------------------- */
+  if (mensagem.tipo === "TRIAGEM_SUGERIDA") {
+    chrome.storage.local.set({
+      sugestao: {
+        eixo: mensagem.eixo,   // "geo" | "social" | "ambiental"
+        nivel: mensagem.nivel, // 1 a 5
+        recebidoEm: Date.now(),
+      },
+    });
+    return;
+  }
+
+  /* --------------------------------------------------------
+     2c) USUARIO CLICOU NO BOTAO DISCRETO DA PAGINA
      Abrimos o painel lateral na propria aba que o usuario
      esta visitando. sidePanel.open exige uma acao do usuario
      (o clique), por isso chamamos dentro do receptor da
@@ -79,7 +96,7 @@ chrome.runtime.onMessage.addListener((mensagem, remetente, responder) => {
   }
 
   /* --------------------------------------------------------
-     2c) PAINEL LATERAL PEDIU O ULTIMO PROCESSO LIDO
+     2d) PAINEL LATERAL PEDIU O ULTIMO PROCESSO LIDO
      Responder e opcional: o sidebar.js tambem le direto do
      storage. Deixamos a resposta pronta por conveniencia.
      -------------------------------------------------------- */
