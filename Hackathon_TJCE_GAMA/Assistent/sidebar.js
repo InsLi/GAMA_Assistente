@@ -19,6 +19,7 @@
    7. Caixa de anotacao (trecho + eixo + nivel 1 a 5)
    8. Historico de anotacoes (localStorage)
    9. Vias de entrada da anotacao (URL, postMessage, extensao)
+   10. Dados complementares e Relatorio de Analise (anonimizado)
    ============================================================ */
 
 /* ------------------------------------------------------------
@@ -84,6 +85,13 @@ document.getElementById("btnNewScreening").addEventListener("click", () => {
       caixa.checked = false;
     });
 
+  // Zera tambem os dados complementares (fase e tipo da
+  // demanda), voltando aos valores padrao do formulario.
+  document.getElementById("selFase").value =
+    "Acervo redistribuído de outra unidade";
+  document.getElementById("selTipo").value =
+    "Desocupação / ocupação irregular em APP";
+
   updateProcessButton(); // Desabilita o botao de processar
   showView("screening");
 });
@@ -108,9 +116,12 @@ document.querySelectorAll("[data-back]").forEach((botao) => {
 const btnProcess = document.getElementById("btnProcess");
 const formHint = document.getElementById("formHint");
 
-// Todos os checkboxes da triagem (6 no total: 2 por eixo).
+// Checkboxes dos 3 eixos da triagem (6 no total: 2 por eixo).
+// O checkbox de tutela de urgencia fica DE FORA do grupo: e
+// um dado complementar da VEMA, nao marca eixo nem libera o
+// botao de processar a matriz de risco.
 const screeningBoxes = document.querySelectorAll(
-  '#view-screening input[type="checkbox"]'
+  '#view-screening input[data-axis]'
 );
 
 /**
@@ -194,6 +205,10 @@ const diagTitle = document.getElementById("diagTitle");
 const diagSub = document.getElementById("diagSub");
 const actionText = document.getElementById("actionText");
 const actionPill = document.getElementById("actionPill");
+
+// Ultimo resultado processado (chave + configuracao).
+// Fica guardado para o Relatorio de Analise (secao 10).
+let ultimoResultado = null;
 
 /* --------------------------------------------------------
      5a) TEXTOS DAS MINUTAS
@@ -342,6 +357,9 @@ function montarResultado(chave) {
   // Busca a configuracao da cor (ou amarelo, se algo falhar).
   const cfg = DIAGNOSTICOS[chave] || DIAGNOSTICOS.amber;
 
+  // Guarda o resultado para o Relatorio de Analise (secao 10).
+  ultimoResultado = { chave, cfg };
+
   // Troca a cor do badge (o CSS define cada visual).
   badge.className = cfg.classeBadge;
 
@@ -353,6 +371,14 @@ function montarResultado(chave) {
   diagSub.textContent = cfg.subtitulo;
   actionText.textContent = cfg.acao;
   actionPill.textContent = cfg.etiqueta;
+
+  // Nota de urgencia: aparece so se a triagem marcou o item
+  // prioritario da VEMA ("Ha pedido de tutela de urgencia?").
+  const chkTutela = document.getElementById("chkTutelaUrgencia");
+  const notaUrgencia = document.getElementById("urgenciaNota");
+  if (chkTutela && notaUrgencia) {
+    notaUrgencia.hidden = !chkTutela.checked;
+  }
 
   // Monta a minuta trocando {PROCESSO} pelo numero real.
   minuta.value = cfg.minuta.replace("{PROCESSO}", numeroProcessoAtual);
@@ -869,4 +895,288 @@ window.addEventListener("message", (evento) => {
   if (!["geo", "social", "ambiental"].includes(dados.eixo)) return;
 
   receberAnotacao(dados.eixo, dados.texto);
+});
+
+/* ------------------------------------------------------------
+   10) DADOS COMPLEMENTARES E RELATORIO DE ANALISE
+   A VEMA confirmou (e-mail do desafio) que hoje NENHUM
+   relatorio ou parecer de analise e produzido ao fim da
+   triagem. O GAMA passa a gerar esse relatorio:
+
+   - com os dados complementares (tutela de urgencia, fase
+     processual e tipo da demanda);
+   - com o diagnostico do semaforo, os eixos, as anotacoes e
+     a minuta;
+   - ANONIMIZADO: numero de processo, CPF, CNPJ e e-mail sao
+     mascarados antes de qualquer exportacao;
+   - em duas saidas: impressao/PDF (area de impressao) e
+     download em JSON (Blob do proprio navegador).
+
+   Tudo roda no dispositivo: nada e enviado a servidor algum.
+   ------------------------------------------------------------ */
+
+// Elementos dos dados complementares (sidebar.html).
+const chkTutelaUrgencia = document.getElementById("chkTutelaUrgencia");
+const selFase = document.getElementById("selFase");
+const selTipo = document.getElementById("selTipo");
+
+// Elementos do bloco do relatorio e da area de impressao.
+const btnPrint = document.getElementById("btnPrint");
+const btnJson = document.getElementById("btnJson");
+const printArea = document.getElementById("printArea");
+
+/**
+ * Le os 3 campos complementares da triagem.
+ * @returns {object} { tutelaUrgencia, fase, tipo }
+ */
+function lerDadosComplementares() {
+  return {
+    tutelaUrgencia: !!(chkTutelaUrgencia && chkTutelaUrgencia.checked),
+    fase: selFase ? selFase.value : "",
+    tipo: selTipo ? selTipo.value : "",
+  };
+}
+
+/**
+ * Mascara dados sensiveis em qualquer texto.
+ * Regras:
+ * - Numero CNJ (0801234-56.2026.8.06.0001): mantem apenas a
+ *   origem (.8.06.0001 = orgao e comarca, nao identificam
+ *   pessoas) e mascara sequencial e ano;
+ * - CPF e CNPJ: totalmente mascarados;
+ * - E-mail: substituido por um marcador.
+ * @param {string} texto texto original
+ * @returns {string} texto anonimizado
+ */
+function anonimizar(texto) {
+  return String(texto || "")
+    // Numero de processo no padrao CNJ.
+    .replace(/\d{7}-\d{2}\.\d{4}\.\d{1,2}\.\d{2}\.\d{4}/g, (match) => {
+      const partes = match.split("."); // [num, ano, orgao, comarca, unidade]
+      return "XXXXXXX-XX.XXXX." + partes.slice(2).join(".");
+    })
+    // CPF: 123.456.789-00
+    .replace(/\b\d{3}\.\d{3}\.\d{3}-\d{2}\b/g, "***.***.***-**")
+    // CNPJ: 12.345.678/0001-90
+    .replace(/\b\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}\b/g, "**.***.***/****-**")
+    // E-mails.
+    .replace(/[\w.+-]+@[\w-]+\.[\w.-]+/g, "[e-mail anonimizado]")
+    // Nomes de partes no padrao das pecas: "AUTOR: JOAO DA SILVA",
+    // "REU: ...", "VITIMA: ..." (o valor inteiro vira marcador).
+    .replace(
+      /\b(AUTOR|AUTORA|RÉU|REU|REQUERENTE|REQUERIDO|EXEQUENTE|EXECUTADO|VÍTIMA|VITIMA)\s*:\s*[^\n\r]+/gi,
+      "$1: [parte anonimizada]"
+    )
+    // Tratamentos seguidos de nome proprio: "Sr. JOAO DA SILVA",
+    // "Dra. MARIA SOUZA". So pega iniciais MAIUSCULAS, para nao
+    // marcar palavras comuns no meio do texto.
+    .replace(
+      /\b(Sr|Sra|Dr|Dra)\.?\s+[A-ZÀ-Ú][\wÀ-ú]+(?:\s+[A-ZÀ-Ú][\wÀ-ú]+)*/g,
+      "$1. [nome anonimizado]"
+    );
+}
+
+/**
+ * Monta o objeto completo do Relatorio de Analise, com todos
+ * os dados da triagem ja anonimizados.
+ * @returns {object} relatorio estruturado (pronto para JSON)
+ */
+function montarRelatorio() {
+  // Usa o ultimo resultado processado (ou amarelo, se vazio).
+  const cfg = (ultimoResultado && ultimoResultado.cfg) || DIAGNOSTICOS.amber;
+
+  // Condicoes marcadas em cada eixo (texto de cada checkbox).
+  const eixos = ["geo", "social", "ambiental"].map((eixo) => {
+    const itens = [
+      ...document.querySelectorAll(
+        `#view-screening input[data-axis="${eixo}"]`
+      ),
+    ]
+      .filter((caixa) => caixa.checked)
+      .map(
+        (caixa) =>
+          (caixa.closest("label") || {}).querySelector
+            ? caixa.closest("label").querySelector("span").textContent.trim()
+            : ""
+      )
+      .filter((texto) => texto);
+
+    return {
+      eixo: ROTULOS_EIXO[eixo],
+      marcado: itens.length > 0,
+      itens,
+    };
+  });
+
+  // Anotacoes de trechos, com o texto ja mascarado.
+  const anotacoes = lerAnotacoes().map((anot) => ({
+    eixo: ROTULOS_EIXO[anot.eixo] || anot.eixo,
+    nivel: anot.nivel,
+    nivelNome: ROTULOS_NIVEL[anot.nivel] || "",
+    trecho: anonimizar(anot.texto),
+    data: anot.criadoEm,
+  }));
+
+  const comp = lerDadosComplementares();
+
+  return {
+    geradoEm: new Date().toISOString(),
+    origem: "GAMA Assistente - Guia de Análise do Meio Ambiente (TJCE)",
+    processo: anonimizar(numeroProcessoAtual),
+    faseProcessual: comp.fase,
+    tipoDemanda: comp.tipo,
+    pedidoTutelaUrgencia: comp.tutelaUrgencia,
+    diagnostico: cfg.titulo,
+    subtitulo: cfg.subtitulo,
+    acaoSugerida: cfg.acao,
+    prazo: cfg.etiqueta,
+    eixos,
+    anotacoes,
+    fundamentacao:
+      "Resolução CNJ nº 345/2020; Resolução CNJ nº 460/2022; " +
+      "CF/88 art. 225; CPC (Lei nº 13.105/2015); Código Florestal " +
+      "(Lei nº 12.651/2012); Lei nº 7.347/1985; Lei nº 9.605/1998.",
+    minuta: anonimizar(minuta.value),
+  };
+}
+
+/**
+ * Converte o relatorio em HTML para a area de impressao.
+ * @param {object} rel relatorio estruturado
+ * @returns {string} HTML pronto para imprimir
+ */
+function montarRelatorioHTML(rel) {
+  // Cor do semaforo a partir do titulo do diagnostico.
+  let corBadge = "amber";
+  if (rel.diagnostico.includes("Vermelho")) corBadge = "red";
+  else if (rel.diagnostico.includes("Verde")) corBadge = "green";
+
+  // Data de geracao no padrao brasileiro.
+  const data = new Date(rel.geradoEm).toLocaleString("pt-BR");
+
+  // Linhas de cada eixo (marcado ou nao, com os itens).
+  const linhasEixos = rel.eixos
+    .map((eixo) => {
+      const status = eixo.marcado ? "MARCADO" : "sem marcações";
+      const itens = eixo.itens.length
+        ? `<ul><li>${eixo.itens.join("</li><li>")}</li></ul>`
+        : "";
+      return `
+        <div class="pr-linha">
+          <span class="pr-rotulo">${eixo.eixo}:</span>
+          <span>${status}${itens}</span>
+        </div>`;
+    })
+    .join("");
+
+  // Bloco de anotacoes de trechos (so aparece se houver).
+  const blocoAnotacoes = rel.anotacoes.length
+    ? `<div class="pr-secao">
+         <h2>Anotações de trechos</h2>
+         ${rel.anotacoes
+           .map(
+             (anot) => `
+           <div class="pr-linha">
+             <span class="pr-rotulo">${anot.eixo} · nível ${anot.nivel} (${anot.nivelNome}):</span>
+             <span>${anot.trecho}</span>
+           </div>`
+           )
+           .join("")}
+       </div>`
+    : "";
+
+  return `
+    <div class="pr-cabecalho">
+      <strong>Tribunal de Justiça do Estado do Ceará - TJCE</strong>
+      <span>GAMA - Guia de Análise do Meio Ambiente</span>
+    </div>
+
+    <h1>Relatório de Análise</h1>
+    <p class="pr-subtitulo">
+      Processo ${rel.processo} · Gerado em ${data}
+    </p>
+
+    <div class="pr-secao">
+      <h2>Dados do processo</h2>
+      <div class="pr-linha">
+        <span class="pr-rotulo">Número (anonimizado):</span>
+        <span>${rel.processo}</span>
+      </div>
+      <div class="pr-linha">
+        <span class="pr-rotulo">Fase processual:</span>
+        <span>${rel.faseProcessual}</span>
+      </div>
+      <div class="pr-linha">
+        <span class="pr-rotulo">Tipo de demanda:</span>
+        <span>${rel.tipoDemanda}</span>
+      </div>
+      <div class="pr-linha">
+        <span class="pr-rotulo">Pedido de tutela de urgência:</span>
+        <span>${rel.pedidoTutelaUrgencia ? "SIM" : "Não"}</span>
+      </div>
+    </div>
+
+    <div class="pr-secao">
+      <h2>Diagnóstico da matriz de risco</h2>
+      <p><span class="pr-badge pr-badge--${corBadge}">${rel.diagnostico}</span></p>
+      <p>${rel.subtitulo}</p>
+      <div class="pr-linha">
+        <span class="pr-rotulo">Ação sugerida:</span>
+        <span>${rel.acaoSugerida} (${rel.prazo})</span>
+      </div>
+    </div>
+
+    <div class="pr-secao">
+      <h2>Eixos de análise</h2>
+      ${linhasEixos}
+    </div>
+
+    ${blocoAnotacoes}
+
+    <div class="pr-secao">
+      <h2>Fundamentação</h2>
+      <p>${rel.fundamentacao}</p>
+    </div>
+
+    <div class="pr-secao">
+      <h2>Minuta de decisão</h2>
+      <pre class="pr-minuta">${rel.minuta}</pre>
+    </div>
+
+    <p class="pr-rodape">
+      Relatório gerado pelo GAMA Assistente. Dados de identificação
+      (número de processo, CPF, CNPJ, e-mail e nomes de partes)
+      anonimizados automaticamente. Documento de apoio à análise, não
+      substitui a decisão do juízo.
+    </p>`;
+}
+
+// Botao "Imprimir / Salvar PDF": preenche a area de impressao
+// e aciona a caixa de impressao do navegador (laudo em PDF).
+btnPrint.addEventListener("click", () => {
+  printArea.innerHTML = montarRelatorioHTML(montarRelatorio());
+  window.print();
+});
+
+// Botao "Baixar JSON": exporta o relatorio estruturado como
+// arquivo .json, via Blob (sem servidor, tudo local).
+btnJson.addEventListener("click", () => {
+  const relatorio = montarRelatorio();
+
+  const blob = new Blob([JSON.stringify(relatorio, null, 2)], {
+    type: "application/json",
+  });
+  const url = URL.createObjectURL(blob);
+
+  // Nome do arquivo: gama-relatorio-AAAA-MM-DD.json
+  const dataArq = new Date().toISOString().slice(0, 10);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `gama-relatorio-${dataArq}.json`;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+
+  toast("Relatório JSON baixado com dados anonimizados.");
 });

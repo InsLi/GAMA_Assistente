@@ -17,6 +17,7 @@
   <link rel="stylesheet" href="css/triagem.css" />     <!-- Tela 2: triagem guiada -->
   <link rel="stylesheet" href="css/anotacao.css" />    <!-- Caixa de anotação e histórico -->
   <link rel="stylesheet" href="css/resultado.css" />   <!-- Tela 3: matriz de risco -->
+  <link rel="stylesheet" href="css/relatorio.css" />   <!-- Relatorio: tela e impressao -->
 </head>
 <body>
   <div class="app">
@@ -130,6 +131,68 @@
             <span class="process-num">0801234-56.2026.8.06.0001</span>
           </div>
 
+          <!-- ====================================================
+               CARD DE DADOS COMPLEMENTARES
+               Perguntas que a VEMA confirmou usar na triagem
+               inicial: pedido de tutela de urgencia, fase do
+               processo (principal gargalo) e tipo da demanda
+               (desocupacao nao e a unica sentenca da vara).
+               Estes campos NAO alteram o semaforo: alimentam o
+               relatorio de analise e o encaminhamento.
+               ==================================================== -->
+          <article class="card card--comp">
+            <header class="card-head">
+              <span class="card-icon card-icon--slate">
+                <svg viewBox="0 0 24 24" class="ico"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+              </span>
+              <div class="card-titles">
+                <h3>Dados complementares</h3>
+                <p>Triagem inicial utilizada pela VEMA</p>
+              </div>
+              <span class="tag tag--slate">Triagem</span>
+            </header>
+            <div class="checks">
+              <!-- Item de destaque: e o primeiro que a VEMA
+                   verifica quando o processo chega. -->
+              <label class="check-row check-row--urgencia">
+                <input type="checkbox" id="chkTutelaUrgencia" />
+                <span>
+                  <strong>Há pedido de tutela de urgência?</strong>
+                  Verificação prioritária na triagem da Vara.
+                </span>
+              </label>
+
+              <div class="comp-campo">
+                <label for="selFase">Fase processual</label>
+                <select id="selFase">
+                  <option value="Inicial">Inicial</option>
+                  <option value="Instrução">Instrução</option>
+                  <option value="Sentença">Sentença</option>
+                  <option value="Recursal">Recursal</option>
+                  <option value="Acervo redistribuído de outra unidade" selected>
+                    Acervo redistribuído de outra unidade
+                  </option>
+                </select>
+              </div>
+
+              <div class="comp-campo">
+                <label for="selTipo">Tipo de demanda</label>
+                <select id="selTipo">
+                  <option value="Desocupação / ocupação irregular em APP" selected>
+                    Desocupação / ocupação irregular em APP
+                  </option>
+                  <option value="Anulação de multas">Anulação de multas</option>
+                  <option value="Obrigação de fazer e não fazer">
+                    Obrigação de fazer e não fazer
+                  </option>
+                  <option value="Ação criminal ambiental">
+                    Ação criminal ambiental
+                  </option>
+                </select>
+              </div>
+            </div>
+          </article>
+
           <div class="legend" role="note" aria-label="Legenda da matriz de risco">
             <span class="legend-item"><i class="dot dot--red"></i>Vermelho · risco à vida</span>
             <span class="legend-item"><i class="dot dot--amber"></i>Amarelo · risco mitigável</span>
@@ -241,6 +304,14 @@
             </div>
           </div>
 
+          <!-- Nota de urgencia: aparece apenas quando a triagem
+               marcou "Há pedido de tutela de urgência?". -->
+          <div class="urgencia-nota" id="urgenciaNota" hidden role="note">
+            <svg viewBox="0 0 24 24" class="ico-sm"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+            Pedido de tutela de urgência presente nos autos: priorize a análise
+            da urgência, independentemente do diagnóstico.
+          </div>
+
           <!-- Fundamentação -->
           <div class="legal-block">
             <div class="legal-row">
@@ -257,6 +328,19 @@
                 <strong>Ação sugerida:</strong>
                 <span id="actionText">Encaminhamento ao CEJUSC</span>
                 <span class="pill" id="actionPill">Prazo: 180 dias</span>
+              </p>
+            </div>
+            <!-- Fontes consultadas: lista confirmada pela propria
+                 VEMA no questionnaire do desafio (e-mail recebido). -->
+            <div class="legal-row">
+              <span class="legal-ico">
+                <svg viewBox="0 0 24 24" class="ico"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+              </span>
+              <p>
+                <strong>Fontes consultadas:</strong>
+                CF/88 art. 225; CPC (Lei nº 13.105/2015); Código Florestal
+                (Lei nº 12.651/2012); Lei nº 7.347/1985; Lei nº 9.605/1998;
+                Resoluções CNJ nº 345/2020 e nº 460/2022.
               </p>
             </div>
           </div>
@@ -279,6 +363,39 @@
               ou verde).
             -->
             <textarea id="minuta" spellcheck="false" aria-label="Minuta de decisão"></textarea>
+          </div>
+
+          <!-- ====================================================
+               RELATORIO DE ANALISE (item novo do pitch)
+               A VEMA confirmou que hoje NENHUM relatorio de
+               analise e produzido no fim da triagem. O GAMA
+               gera esse relatorio de forma ANONIMIZADA, com
+               impressao/PDF e exportacao em JSON.
+               ==================================================== -->
+          <div class="relatorio-block">
+            <div class="relatorio-head">
+              <span class="relatorio-ico">
+                <svg viewBox="0 0 24 24" class="ico-sm"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5z"/><path d="M14 3v5h5"/><path d="M9 13h6"/><path d="M9 17h4"/></svg>
+              </span>
+              <div>
+                <strong>Relatório de Análise</strong>
+                <span>Documento único da triagem, pronto para o arquivo do caso.</span>
+              </div>
+            </div>
+            <div class="relatorio-acoes">
+              <button type="button" class="btn btn-green" id="btnPrint">
+                <svg viewBox="0 0 24 24" class="ico"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 14h12v8H6z"/></svg>
+                Imprimir / Salvar PDF
+              </button>
+              <button type="button" class="btn btn-outline" id="btnJson">
+                <svg viewBox="0 0 24 24" class="ico"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>
+                Baixar JSON
+              </button>
+            </div>
+            <p class="relatorio-nota">
+              Número de processo, CPF, CNPJ, e-mail e nomes de partes são
+              mascarados automaticamente.
+            </p>
           </div>
         </div>
 
@@ -334,6 +451,16 @@
       <div class="toast" id="toast" role="status" aria-live="polite"></div>
     </aside>
   </div>
+
+  <!-- ============================================================
+       AREA DE IMPRESSAO DO RELATORIO
+       Fica escondida na tela (display:none). Quando o usuario
+       clica em "Imprimir / Salvar PDF", o sidebar.js preenche
+       esta area com o relatorio e chama window.print(): o CSS
+       de impressao (css/relatorio.css) esconde o painel e
+       mostra SOMENTE o relatorio na pagina impressa.
+       ============================================================ -->
+  <div class="print-area" id="printArea" aria-hidden="true"></div>
 
   <script src="sidebar.js"></script>
 </body>

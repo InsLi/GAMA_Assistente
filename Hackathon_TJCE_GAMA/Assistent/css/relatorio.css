@@ -1,0 +1,148 @@
+/* ============================================================
+   ARQUIVO: relatorio.css
+   O que este arquivo cuida:
+   - Area de impressao do Relatorio de Analise (.print-area)
+   - Estilo do relatorio QUANDO IMPRESSO (pagina branca)
+   - Regra @media print que esconde o painel e mostra apenas
+     o relatorio na hora de imprimir ou salvar em PDF
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   1) AREA DE IMPRESSAO (escondida na tela)
+   Esta div vive fora do painel, no fim do body. Na tela ela
+   nao aparece (display:none); ela so e preenchida e exibida
+   no momento da impressao (veja 3 abaixo).
+   ------------------------------------------------------------ */
+.print-area { display: none; }
+
+/* ------------------------------------------------------------
+   2) ESTILO DO RELATORIO IMPRESSO
+   Fonte serifada, fundo branco e espacamento de documento
+   oficial, para o PDF parecer um papel do tribunal.
+   ------------------------------------------------------------ */
+.print-area {
+  color: #111;
+  font-family: "Times New Roman", "Noto Serif", Georgia, serif;
+  font-size: 12.5px;
+  line-height: 1.6;
+}
+
+/* Cabecalho do relatorio: logo textual + numero mascarado */
+.print-area .pr-cabecalho {
+  text-align: center;
+  border-bottom: 2px solid #002e63;
+  padding-bottom: 10px;
+  margin-bottom: 16px;
+}
+.print-area .pr-cabecalho strong {
+  display: block;
+  color: #002e63;
+  font-size: 15px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.print-area .pr-cabecalho span {
+  display: block;
+  margin-top: 3px;
+  font-size: 11.5px;
+  color: #444;
+}
+
+/* Titulo centralizado do documento */
+.print-area h1 {
+  margin: 0 0 4px;
+  color: #002e63;
+  font-size: 17px;
+  text-align: center;
+}
+
+/* Subtitulo com processo mascarado e data */
+.print-area .pr-subtitulo {
+  margin: 0 0 16px;
+  text-align: center;
+  font-size: 11.5px;
+  color: #555;
+}
+
+/* Blocos de secao (dados, diagnostico, fundamentacao...) */
+.print-area .pr-secao {
+  margin-bottom: 14px;
+  page-break-inside: avoid; /* Nao quebra a secao no meio do PDF */
+}
+.print-area .pr-secao h2 {
+  margin: 0 0 6px;
+  padding-bottom: 3px;
+  border-bottom: 1px solid #c9d2dd;
+  color: #002e63;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Lista de dados em duas colunas (rotulo: valor) */
+.print-area .pr-linha {
+  display: flex;
+  gap: 8px;
+  margin: 2px 0;
+}
+.print-area .pr-rotulo {
+  flex: none;
+  width: 170px;
+  font-weight: 700;
+  color: #333;
+}
+
+/* Etiqueta colorida do semaforo dentro do relatorio */
+.print-area .pr-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 4px;
+  color: #fff;
+  font-weight: 700;
+  font-size: 12px;
+}
+.print-area .pr-badge--red { background: #dc2626; }
+.print-area .pr-badge--amber { background: #f3b81d; color: #002e63; }
+.print-area .pr-badge--green { background: #1e824c; }
+
+/* Minuta integral no fim do relatorio */
+.print-area .pr-minuta {
+  margin: 0;
+  padding: 10px 12px;
+  background: #f6f8fa;
+  border: 1px solid #d7dee7;
+  white-space: pre-wrap;
+  font-family: "Times New Roman", Georgia, serif;
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+/* Rodape com a nota de anonimizacao e geracao */
+.print-area .pr-rodape {
+  margin-top: 18px;
+  padding-top: 8px;
+  border-top: 1px solid #c9d2dd;
+  font-size: 10.5px;
+  color: #666;
+  text-align: center;
+}
+
+/* ------------------------------------------------------------
+   3) REGRA DE IMPRESSAO
+   Na hora de imprimir: esconde o painel inteiro e mostra
+   somente a area do relatorio. Vale para o painel da extensao
+   e para a demo (iframe), pois cada um imprime o proprio
+   documento.
+   ------------------------------------------------------------ */
+@media print {
+  body { background: #fff; }
+
+  /* O painel (app) some da impressao */
+  .app { display: none !important; }
+
+  /* O relatorio aparece e ocupa a pagina toda */
+  .print-area { display: block !important; }
+
+  /* Margens padrao de documento impresso */
+  @page { margin: 18mm 16mm; }
+}
