@@ -35,7 +35,50 @@ chrome.runtime.onInstalled.addListener(() => {
 });
 
 /* ------------------------------------------------------------
-   2) RECEPTOR DE MENSAGENS
+   2) FUNCAO DE ABERTURA DO PAINEL (com reserva)
+   Tenta abrir o painel lateral (side panel) na aba em que o
+   usuario esta. Essa chamada exige uma acao do usuario (um
+   clique) e nem todas as versoes do Chrome aceitam abri-la a
+   partir de uma mensagem.
+
+   Se o painel nao abrir, entra a RESERVA: uma aba nova com o
+   proprio painel (sidebar.html), ja com o trecho na URL
+   quando houver. Assim o usuario sempre recebe uma resposta
+   visivel, mesmo quando o painel lateral e bloqueado.
+   ------------------------------------------------------------ */
+
+/**
+ * Abre o painel lateral ou, se nao der, o painel em aba nova.
+ * @param {object} remetente quem enviou a mensagem (content script)
+ * @param {object|null} anotacao trecho enviado ou null
+ */
+function abrirPainelComReserva(remetente, anotacao) {
+  // remetente.tab so existe quando a mensagem vem de uma
+  // pagina (content script), e nao de outro arquivo da ext.
+  const tabId = remetente && remetente.tab && remetente.tab.id;
+  if (tabId == null) return;
+
+  chrome.sidePanel
+    .open({ tabId })
+    .catch((erro) => {
+      console.error("GAMA Assistente: painel lateral bloqueado.", erro);
+
+      // RESERVA: monta a URL do painel em aba nova. Se ha um
+      // trecho, ele vai na URL para a caixa de anotacao abrir
+      // pronta (o sidebar.js le estes parametros ao carregar).
+      let url = chrome.runtime.getURL("sidebar.html");
+      if (anotacao && anotacao.eixo && anotacao.texto) {
+        const recorte = String(anotacao.texto).slice(0, 300);
+        url +=
+          "?eixo=" + encodeURIComponent(anotacao.eixo) +
+          "&trecho=" + encodeURIComponent(recorte);
+      }
+      chrome.tabs.create({ url });
+    });
+}
+
+/* ------------------------------------------------------------
+   3) RECEPTOR DE MENSAGENS
    Toda mensagem enviada por content.js ou sidebar.js chega
    aqui. O "remetente" (sender) identifica de onde veio.
    ------------------------------------------------------------ */
@@ -61,18 +104,28 @@ chrome.runtime.onMessage.addListener((mensagem, remetente, responder) => {
   /* --------------------------------------------------------
      2b) PAGINA ENVIou UM TRECHO SELECIONADO COM EIXO
      O content script repassa o TEXTO e o EIXO escolhidos pelo
-     usuario na caixinha do documento de demonstracao. O nivel
-     de risco (1 a 5) NAO vem aqui: ele sera escolhido pelo
-     usuario dentro do proprio painel. Guardamos o trecho no
-     armazenamento para o painel lateral aplicar quando abrir.
+     usuario na caixinha (qualquer pagina ou documento da
+     demonstracao). O nivel de risco (1 a 5) NAO vem aqui: ele
+     sera escolhido pelo usuario dentro do proprio painel.
+
+     Guardamos o trecho no armazenamento e ja tentamos abrir
+     o painel lateral. Se o navegador nao deixar abrir o
+     painel nesse momento (algumas versoes exigem clique
+     direto no icone), abrimos o painel em uma ABA NOVA com o
+     trecho na URL, para o usuario nunca ficar sem resposta.
      -------------------------------------------------------- */
   if (mensagem.tipo === "ANOTACAO_RECEBIDA") {
-    chrome.storage.local.set({
-      anotacao: {
-        eixo: mensagem.eixo,   // "geo" | "social" | "ambiental"
-        texto: mensagem.texto, // Trecho completo selecionado
-        recebidoEm: Date.now(),
-      },
+    const anotacao = {
+      eixo: mensagem.eixo,   // "geo" | "social" | "ambiental"
+      texto: mensagem.texto, // Trecho completo selecionado
+      recebidoEm: Date.now(),
+    };
+
+    // Grava PRIMEIRO e so depois abre o painel: assim o
+    // painel ja encontra o trecho pronto quando carregar
+    // (evita corrida entre gravar e abrir).
+    chrome.storage.local.set({ anotacao }).then(() => {
+      abrirPainelComReserva(remetente, anotacao);
     });
     return;
   }
@@ -85,15 +138,7 @@ chrome.runtime.onMessage.addListener((mensagem, remetente, responder) => {
      mensagem disparada pelo clique.
      -------------------------------------------------------- */
   if (mensagem.tipo === "ABRIR_PAINEL") {
-    // remetente.tab so existe quando a mensagem vem de uma
-    // pagina (content script), e nao de outro arquivo da ext.
-    if (remetente && remetente.tab && remetente.tab.id != null) {
-      chrome.sidePanel
-        .open({ tabId: remetente.tab.id })
-        .catch((erro) => {
-          console.error("GAMA Assistente: nao foi possivel abrir o painel.", erro);
-        });
-    }
+    abrirPainelComReserva(remetente, null);
     return;
   }
 

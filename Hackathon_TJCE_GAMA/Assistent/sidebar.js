@@ -471,6 +471,13 @@ if (TEM_EXTENSAO) {
       // escolhido aqui dentro, no seletor da caixa de anotacao.
       if (mensagem && mensagem.tipo === "ANOTACAO_RECEBIDA") {
         receberAnotacao(mensagem.eixo, mensagem.texto);
+
+        // O painel ja estava aberto e recebeu direto: limpamos
+        // a copia que o background guardou no storage, para o
+        // trecho nao reaparecer sozinho numa proxima abertura.
+        if (chrome.storage && chrome.storage.local) {
+          chrome.storage.local.remove("anotacao");
+        }
       }
     });
   }

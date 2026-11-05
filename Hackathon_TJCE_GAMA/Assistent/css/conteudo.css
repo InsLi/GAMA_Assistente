@@ -66,3 +66,147 @@
   background: #1e824c;
   box-shadow: 0 0 0 3px rgba(30, 130, 76, 0.35);
 }
+
+/* ------------------------------------------------------------
+   3) CAIXINHA DE SELECAO DE TEXTO
+   Aparece quando o usuario seleciona um trecho em qualquer
+   pagina. Pergunta o EIXO do trecho; o nivel (1 a 5) e
+   definido no painel da extensao.
+   Posicao absoluta: fica ancorada na selecao do usuario.
+   ------------------------------------------------------------ */
+#gama-caixa-selecao {
+  position: absolute;
+  z-index: 2147483646; /* Quase o valor maximo possivel */
+  width: 276px;
+  padding: 12px 13px;
+  background: #ffffff;
+  border: 1px solid rgba(0, 46, 99, 0.16);
+  border-radius: 8px;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.24);
+  font-family: "Inter", "Roboto", -apple-system, "Segoe UI", system-ui, Arial,
+    sans-serif;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #16202e;
+  /* Animacao de entrada discreta */
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.16s ease, transform 0.16s ease;
+}
+
+#gama-caixa-selecao[hidden] {
+  display: none;
+}
+
+#gama-caixa-selecao.is-visivel {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Recorte do texto que o usuario selecionou (2 linhas) */
+#gama-caixa-selecao .gama-caixa-trecho {
+  margin: 0 0 8px;
+  padding: 7px 9px;
+  background: #f4f7fa;
+  border-left: 3px solid #002e63;
+  border-radius: 4px;
+  color: #475569;
+  font-size: 11.5px;
+  font-style: italic;
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* Corta apos 2 linhas */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Pergunta que orienta a escolha do eixo */
+#gama-caixa-selecao .gama-caixa-pergunta {
+  margin: 0 0 7px;
+  color: #002e63;
+  font-size: 12.5px;
+  font-weight: 800;
+}
+
+/* Lista vertical com os 3 botoes de eixo */
+#gama-caixa-selecao .gama-caixa-eixos {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* Botao de cada eixo */
+#gama-caixa-selecao .gama-caixa-botao {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 10px;
+  border: 1.5px solid #e6ebf2;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #334155;
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.14s ease, background 0.14s ease;
+}
+
+#gama-caixa-selecao .gama-caixa-botao:hover {
+  background: #f8fafc;
+  border-color: #002e63;
+}
+
+/* Bolinha colorida que identifica o eixo */
+#gama-caixa-selecao .gama-caixa-ponto {
+  width: 10px;
+  height: 10px;
+  flex: none;
+  display: inline-block;
+  border-radius: 50%;
+  border: 1px solid rgba(15, 23, 42, 0.18);
+}
+
+/* Rodape: orienta que o nivel sera definido no painel */
+#gama-caixa-selecao .gama-caixa-rodape {
+  display: block;
+  margin-top: 9px;
+  padding-top: 8px;
+  border-top: 1px solid #eef2f7;
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* ------------------------------------------------------------
+   4) AVISO DE ENVIO (feedback na pagina)
+   Mensagem curta no canto inferior esquerdo mostrada apos o
+   usuario escolher o eixo, confirmando que o trecho foi
+   enviado para o painel da extensao.
+   ------------------------------------------------------------ */
+#gama-aviso-envio {
+  position: fixed;
+  left: 20px;
+  bottom: 20px;
+  z-index: 2147483646;
+  max-width: 320px;
+  padding: 11px 14px;
+  background: #002e63;
+  color: #ffffff;
+  border-radius: 8px;
+  font-family: "Inter", "Roboto", -apple-system, "Segoe UI", system-ui, Arial,
+    sans-serif;
+  font-size: 12px;
+  line-height: 1.5;
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.28);
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.18s ease, transform 0.18s ease;
+  pointer-events: none;
+}
+
+#gama-aviso-envio.is-visivel {
+  opacity: 1;
+  transform: translateY(0);
+}
