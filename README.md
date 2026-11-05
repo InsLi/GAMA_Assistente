@@ -30,8 +30,9 @@ Objetivos do projeto:
 ## Protótipo / MVP
 
 1. Acionamento discreto no navegador, por meio de extensão lateral que não interrompe a consulta ao processo.
-2. Triagem guiada do processo por checklist estruturado.
+2. Triagem guiada do processo por checklist estruturado, com dados complementares confirmados pela VEMA: pedido de tutela de urgência, fase processual e tipo de demanda.
 3. Análise em três eixos: Geotécnico, Social e Ambiental.
+4. Relatório de análise anonimizado, exportável em PDF (impressão) e JSON.
 
 ## Matriz de decisão: o semáforo de risco
 
@@ -48,8 +49,8 @@ Critério adotado no MVP, de forma determinística e explicável: qualquer marca
 A interface é um painel lateral fixo à direita, no formato do painel lateral (side panel) do navegador, com largura máxima de 400 px.
 
 1. **Menu inicial** - apresentação da ferramenta com as ações "Iniciar Nova Triagem" e "Consultar Histórico".
-2. **Triagem guiada** - formulário estruturado em três blocos de análise, com legenda do semáforo e validação antes do processamento. Quando um trecho chega do documento, uma caixa de anotação aparece no topo com o eixo escolhido e o seletor de nível de risco de 1 a 5.
-3. **Resultado da matriz** - diagnóstico em semáforo (vermelho, amarelo ou verde), fundamentação legal, ação sugerida e editor com minuta de decisão pré-preenchida, pronta para copiar.
+2. **Triagem guiada** - bloco de dados complementares (pedido de tutela de urgência em destaque, fase processual e tipo de demanda, conforme a triagem da VEMA) mais formulário estruturado em três blocos de análise, com legenda do semáforo e validação antes do processamento. Quando um trecho chega do documento, uma caixa de anotação aparece no topo com o eixo escolhido e o seletor de nível de risco de 1 a 5.
+3. **Resultado da matriz** - diagnóstico em semáforo (vermelho, amarelo ou verde), nota de urgência quando aplicável, fundamentação legal com as fontes consultadas pela VEMA, ação sugerida, editor com minuta de decisão pré-preenchida pronta para copiar e bloco **Relatório de Análise** com exportação em impressão/PDF e JSON, sempre anonimizado.
 4. **Histórico de anotações** - lista das anotações salvas (trecho, eixo, nível e data), com remoção item a item e opção de limpar tudo.
 
 ## Eixos de análise
@@ -117,6 +118,7 @@ GAMA_Assistente/
 │       │   ├── triagem.css       Tela 2: triagem guiada
 │       │   ├── anotacao.css      Caixa de anotação e histórico
 │       │   ├── resultado.css     Tela 3: matriz de risco
+│       │   ├── relatorio.css     Relatório de análise e impressão
 │       │   └── conteudo.css      Botão discreto injetado nas páginas
 │       └── logo.png              Logotipo do projeto
 ├── index.html                    Página de entrada da demonstração
@@ -129,8 +131,10 @@ GAMA_Assistente/
 ├── documento-demo.js             Caixinha de seleção e ponte com a extensão
 ├── fotos-slides/                 Capturas da demonstração para apresentação
 ├── logo.png                      Logotipo do projeto
+├── qr-demo.png                   QR code da demonstração (para o pitch)
 ├── Modelo_Pitch.md            Apresentação do projeto
 ├── Modelo_Pitch.pdf           Apresentação do projeto (PDF)
+├── Roteiro_Demo.md            Roteiro de 2-3 min + vídeo de fallback
 ├── Ideia_MVP.pdf              Conceito do MVP
 ├── LICENSE                    Licença MIT
 └── README.md                  Este arquivo
@@ -145,6 +149,10 @@ GAMA_Assistente/
 - Identidade visual institucional: azul marinho `#002E63`, verde natureza `#1E824C` e cabeçalho em tom de menta.
 - Layout responsivo dentro dos limites de largura de um painel lateral de extensão.
 - Minuta de decisão copiável para a área de transferência.
+- **Relatório de análise anonimizado** com duas exportações: impressão/PDF (área de impressão exclusiva) e JSON (download via Blob), ambos sem servidor.
+- **Anonimização automática**: número CNJ, CPF, CNPJ e e-mail são mascarados antes de qualquer exportação.
+- Dados complementares da triagem da VEMA: pedido de tutela de urgência (com nota no resultado), fase processual e tipo de demanda (desocupação, anulação de multas, obrigação de fazer/não fazer, criminal).
+- Fundamentação com as fontes consultadas pela VEMA: CF/88 art. 225, CPC, Código Florestal, Leis nº 7.347/1985 e nº 9.605/1998, além das Resoluções CNJ nº 345/2020 e nº 460/2022.
 - Anotação de trechos com eixo escolhido pelo usuário e nível de risco de 1 a 5, gravada no `localStorage` e listada na tela de histórico.
 - Dados armazenados localmente no dispositivo.
 
@@ -163,6 +171,7 @@ GAMA_Assistente/
 ## Documentos do projeto
 
 - `Modelo_Pitch.md` e `Modelo_Pitch.pdf` - apresentação do projeto.
+- `Roteiro_Demo.md` - roteiro de demonstração de 2 a 3 minutos com plano B em vídeo.
 - `Ideia_MVP.pdf` - conceito do MVP.
 
 ## Licença
