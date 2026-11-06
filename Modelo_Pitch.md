@@ -1,10 +1,10 @@
 # Conectando a dignidade humana e a preservação ambiental em cada decisão
 
-**Hackathon TJCE + UFC — Equipe 11, Desafio 01**
+**Hackathon TJCE + UFC - Equipe 11, Desafio 01**
 
 ---
 
-## PROBLEMA — DESAFIO 01
+## PROBLEMA | DESAFIO 01
 
 Como tratar as ações envolvendo ocupações irregulares em áreas de preservação
 ambiental, considerando os limites financeiros, territoriais e sociais dos
@@ -14,9 +14,9 @@ municípios, bem como a dignidade e a vida das pessoas envolvidas?
 
 ## PROBLEMA
 
-- **445,4 mil pessoas** vivendo em unidades de conservação no Ceará —
+- **445,4 mil pessoas** vivendo em unidades de conservação no Ceará -
   8ª maior população do Brasil.
-  *(Diário do Nordeste — 11 de julho de 2025)*
+  *(Diário do Nordeste - 11 de julho de 2025)*
 - O tempo de solução da sentença é demorado e desgastante para todos os lados.
 - O meio ambiente segue se degradando ao longo do tempo de resolução.
 - Pessoas ficam em situação de vulnerabilidade social, sem para onde ir.
@@ -37,7 +37,7 @@ municípios, bem como a dignidade e a vida das pessoas envolvidas?
 
 ---
 
-## VALIDAÇÃO — PERGUNTAMOS À VEMA, E ELES RESPONDERAM
+## VALIDAÇÃO | PERGUNTAMOS À VEMA, E ELES RESPONDERAM
 
 Durante o desafio, a equipe enviou 14 perguntas à equipe da VEMA.
 As respostas moldaram a solução:
@@ -51,18 +51,18 @@ As respostas moldaram a solução:
 | Quais fontes são consultadas? | CF/88 art. 225, CPC, Código Florestal, Leis 7.347/1985 e 9.605/1998 |
 | Dá para exportar dados? | **Sim.** E há restrições de segurança a considerar |
 
-> **Resposta à dúvida da reunião de 28/09 (Bárbara):** confirmado — existem
+> **Resposta à dúvida da reunião de 28/09 (Bárbara):** confirmado - existem
 > sentenças além das de desocupação, na área cível e na criminal:
 > anulação de multas, obrigações de fazer e não fazer e ações criminais.
 > O GAMA já classifica esses tipos de demanda na triagem.
 
 **O que fizemos com essas respostas:** implementamos exatamente o que
-faltava — dados complementares na triagem (tutela de urgência, fase,
+faltava - dados complementares na triagem (tutela de urgência, fase,
 tipo de demanda) e o **relatório de análise que hoje ninguém produz**.
 
 ---
 
-## VALIDAÇÃO — MATRIZ DE DECISÃO
+## VALIDAÇÃO | MATRIZ DE DECISÃO
 
 **O semáforo de risco: cada cor aponta o caminho jurídico mais adequado.**
 
@@ -81,41 +81,41 @@ em verde. Cada diagnóstico gera fundamentação legal, ação sugerida e minuta
 
 ## NA TELA
 
-1. **Menu inicial** — iniciar triagem ou consultar histórico.
-2. **Triagem guiada** — dados complementares da VEMA + checklist dos três
+1. **Menu inicial** - iniciar triagem ou consultar histórico.
+2. **Triagem guiada** - dados complementares da VEMA + checklist dos três
    eixos, com anotação de trechos e nível de risco de 1 a 5.
-3. **Resultado** — semáforo, fundamentação, minuta copiável e
+3. **Resultado** - semáforo, fundamentação, minuta copiável e
    **Relatório de Análise** (impressão/PDF e JSON, anonimizado).
-4. **Histórico** — anotações salvas no próprio dispositivo.
+4. **Histórico** - anotações salvas no próprio dispositivo.
 
 **Demonstre ao vivo:** [insli.github.io/GAMA_Assistente](https://insli.github.io/GAMA_Assistente/)
 
 **Vídeo da demonstração (plano B):** inserir aqui o link do vídeo gravado
-(ver `Roteiro_Demo.md` — gravação de tela executando o roteiro).
+(ver `Roteiro_Demo.md` - gravação de tela executando o roteiro).
 
 ![QR code da demonstração](qr-demo.png)
 
 ---
 
-## INTEGRAÇÃO SEGURA — RESPONDENDO ÀS RESTRIÇÕES DA VEMA
+## INTEGRAÇÃO SEGURA | RESPONDENDO ÀS RESTRIÇÕES DA VEMA
 
 A VEMA confirmou que **existem restrições de segurança** e que a plataforma
 permite **importar e exportar** informações.
 
-- A extensão roda **no lado do usuário**, ao lado da plataforma já usada —
+- A extensão roda **no lado do usuário**, ao lado da plataforma já usada -
   não exige API nem alteração nos sistemas do TJCE.
 - **Nada sai da máquina:** triagem, anotações e relatório ficam no
   `localStorage` do dispositivo, sem servidor e sem nuvem.
 - Exportação por **arquivo** (JSON/PDF), exatamente o formato que a
   plataforma já permite importar e exportar.
-- Complementar por design: **não substitui** a plataforma — soma a ela.
+- Complementar por design: **não substitui** a plataforma - soma a ela.
 
 ---
 
 ## ALINHAMENTO COM A AGENDA DA ONU
 
-- **11** — Cidades e Comunidades Sustentáveis
-- **16** — Paz, Justiça e Instituições Eficazes
+- **11** - Cidades e Comunidades Sustentáveis
+- **16** - Paz, Justiça e Instituições Eficazes
 
 ---
 
@@ -131,7 +131,7 @@ permite **importar e exportar** informações.
 ## MODELO DE NEGÓCIO
 
 - **B2G:** adoção institucional pelo TJCE.
-- **Valor:** baixo custo — roda como extensão sobre a estrutura já existente
+- **Valor:** baixo custo - roda como extensão sobre a estrutura já existente
   (PJe, AURI, Sara).
 - **Zero:** contratações de servidores e custos de licenciamento.
 
@@ -145,7 +145,7 @@ permite **importar e exportar** informações.
   durante a tramitação.
 - **Checklist estruturado + matriz de decisão em três eixos:**
   geotécnico, social e ambiental.
-- **Relatório de análise anonimizado** — o documento que a VEMA confirmou
+- **Relatório de análise anonimizado** - o documento que a VEMA confirmou
   não existir hoje, gerado em um clique (PDF e JSON).
 - Solução **100% gratuita e offline**: HTML, CSS e JavaScript puros,
   zero dependências.
@@ -168,12 +168,12 @@ com o TJCE.*
 
 ## O TIME
 
-- **Carla Nayanna** — Mestranda em Avaliação de Políticas Públicas,
+- **Carla Nayanna** - Mestranda em Avaliação de Políticas Públicas,
   Assistente Social, Especialista em Políticas Públicas (UFC Campus PICI).
-- **Josias Batista** — Engenheiro de Software (UFC Campus Quixadá).
-  1º Lugar no Corredores Digitais Bora Criar 2026; 3º Lugar — Trilha Web 3.0
+- **Josias Batista** - Engenheiro de Software (UFC Campus Quixadá).
+  1º Lugar no Corredores Digitais Bora Criar 2026; 3º Lugar - Trilha Web 3.0
   no hackathon XRP Ledger (XRPL) 2024.
-- **Inês Lima** — Engenharia de Computação (UFC Campus Sobral).
+- **Inês Lima** - Engenharia de Computação (UFC Campus Sobral).
 
 ---
 
